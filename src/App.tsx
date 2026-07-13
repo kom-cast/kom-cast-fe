@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 
 import { OnboardingProvider } from '@/context/onboarding-context'
+import HomePage from '@/pages/HomePage'
 import LoginPage from '@/pages/LoginPage'
 import NotFoundPage from '@/pages/NotFoundPage'
 import OnboardingFlow from '@/pages/OnboardingFlow'
@@ -14,6 +15,7 @@ function App() {
         <Route path='/login' element={<LoginPage />} />
         <Route path='/signup' element={<SignupPage />} />
         <Route path='/onboarding' element={<OnboardingFlow />} />
+        <Route path='/home' element={<HomePage />} />
         <Route path='*' element={<NotFoundPage />} />
       </Routes>
     </OnboardingProvider>
