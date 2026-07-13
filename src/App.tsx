@@ -6,6 +6,7 @@ import LibraryPage from '@/pages/LibraryPage'
 import LoginPage from '@/pages/LoginPage'
 import MyPage from '@/pages/MyPage'
 import NotFoundPage from '@/pages/NotFoundPage'
+import NotificationsPage from '@/pages/NotificationsPage'
 import OnboardingFlow from '@/pages/OnboardingFlow'
 import PlayerPage from '@/pages/PlayerPage'
 import SignupPage from '@/pages/SignupPage'
@@ -22,6 +23,7 @@ function App() {
         <Route path='/library' element={<LibraryPage />} />
         <Route path='/player' element={<PlayerPage />} />
         <Route path='/my' element={<MyPage />} />
+        <Route path='/notifications' element={<NotificationsPage />} />
         <Route path='*' element={<NotFoundPage />} />
       </Routes>
     </OnboardingProvider>
