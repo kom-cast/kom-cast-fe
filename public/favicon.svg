@@ -1,0 +1,28 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#EC6D1E" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#EC6D1E" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="bar" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFB067"/>
+      <stop offset="100%" stop-color="#E85D00"/>
+    </linearGradient>
+    <filter id="blur" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="16"/>
+    </filter>
+  </defs>
+
+  <circle cx="256" cy="256" r="200" fill="url(#glow)" filter="url(#blur)"/>
+
+  <g>
+    <rect x="43.2" y="219.6" width="33.6" height="72.8" rx="16.8" fill="url(#bar)"/>
+    <rect x="99.2" y="160.8" width="33.6" height="190.4" rx="16.8" fill="url(#bar)"/>
+    <rect x="155.2" y="194.4" width="33.6" height="123.2" rx="16.8" fill="url(#bar)"/>
+    <rect x="211.2" y="102.0" width="33.6" height="308.0" rx="16.8" fill="url(#bar)"/>
+    <rect x="267.2" y="146.8" width="33.6" height="218.4" rx="16.8" fill="url(#bar)"/>
+    <rect x="323.2" y="79.6" width="33.6" height="352.8" rx="16.8" fill="url(#bar)"/>
+    <rect x="379.2" y="183.2" width="33.6" height="145.6" rx="16.8" fill="url(#bar)"/>
+    <rect x="435.2" y="225.2" width="33.6" height="61.6" rx="16.8" fill="url(#bar)"/>
+  </g>
+</svg>
