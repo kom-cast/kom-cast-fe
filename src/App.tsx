@@ -4,6 +4,7 @@ import { OnboardingProvider } from '@/context/onboarding-context'
 import HomePage from '@/pages/HomePage'
 import LibraryPage from '@/pages/LibraryPage'
 import LoginPage from '@/pages/LoginPage'
+import MyPage from '@/pages/MyPage'
 import NotFoundPage from '@/pages/NotFoundPage'
 import OnboardingFlow from '@/pages/OnboardingFlow'
 import PlayerPage from '@/pages/PlayerPage'
@@ -20,6 +21,7 @@ function App() {
         <Route path='/home' element={<HomePage />} />
         <Route path='/library' element={<LibraryPage />} />
         <Route path='/player' element={<PlayerPage />} />
+        <Route path='/my' element={<MyPage />} />
         <Route path='*' element={<NotFoundPage />} />
       </Routes>
     </OnboardingProvider>
