@@ -1,12 +1,10 @@
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 
 import { OnboardingProvider } from '@/context/onboarding-context'
 import HomePage from '@/pages/HomePage'
 import LibraryPage from '@/pages/LibraryPage'
-import LoginPage from '@/pages/LoginPage'
 import MyPage from '@/pages/MyPage'
 import NotificationsPage from '@/pages/NotificationsPage'
-import OnboardingFlow from '@/pages/OnboardingFlow'
 import PlayerPage from '@/pages/PlayerPage'
 import BriefingTimeSettingsPage from '@/pages/settings/BriefingTimeSettingsPage'
 import NotificationSettingsPage from '@/pages/settings/NotificationSettingsPage'
@@ -14,16 +12,13 @@ import SectorsSettingsPage from '@/pages/settings/SectorsSettingsPage'
 import StocksSettingsPage from '@/pages/settings/StocksSettingsPage'
 import StubSettingsPage from '@/pages/settings/StubSettingsPage'
 import VoiceSettingsPage from '@/pages/settings/VoiceSettingsPage'
-import SignupPage from '@/pages/SignupPage'
-import { NotFoundPage } from '@/pages'
+import { IntroPage, NotFoundPage, OnboardingFlow } from '@/pages'
 
 function App() {
   return (
     <OnboardingProvider>
       <Routes>
-        <Route path='/' element={<Navigate to='/login' replace />} />
-        <Route path='/login' element={<LoginPage />} />
-        <Route path='/signup' element={<SignupPage />} />
+        <Route path='/' element={<IntroPage />} />
         <Route path='/onboarding' element={<OnboardingFlow />} />
         <Route path='/home' element={<HomePage />} />
         <Route path='/library' element={<LibraryPage />} />
