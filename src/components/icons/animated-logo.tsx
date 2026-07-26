@@ -11,7 +11,15 @@ const bars = [
   { x: 435.2, y: 225.2, w: 33.6, h: 61.6, duration: 1.05, delay: 0.2 },
 ]
 
-function AnimatedLogo({ className }: { className?: string }) {
+export function AnimatedLogo({
+  className,
+  paused = false,
+}: {
+  className?: string
+  paused?: boolean
+}) {
+  const playState = paused ? 'paused' : 'running'
+
   return (
     <svg
       width='512'
@@ -22,12 +30,12 @@ function AnimatedLogo({ className }: { className?: string }) {
     >
       <defs>
         <radialGradient id='logo-glow' cx='50%' cy='50%' r='50%'>
-          <stop offset='0%' stopColor='#EC6D1E' stopOpacity='0.22' />
-          <stop offset='100%' stopColor='#EC6D1E' stopOpacity='0' />
+          <stop offset='0%' stopColor='#ff7a38' stopOpacity='0.22' />
+          <stop offset='100%' stopColor='#ff7a38' stopOpacity='0' />
         </radialGradient>
         <linearGradient id='logo-bar' x1='0' y1='0' x2='0' y2='1'>
           <stop offset='0%' stopColor='#FFB067' />
-          <stop offset='100%' stopColor='#E85D00' />
+          <stop offset='100%' stopColor='#ff7a38' />
         </linearGradient>
         <filter id='logo-blur' x='-50%' y='-50%' width='200%' height='200%'>
           <feGaussianBlur stdDeviation='16' />
@@ -45,6 +53,8 @@ function AnimatedLogo({ className }: { className?: string }) {
             transformBox: 'fill-box',
             transformOrigin: 'center',
             animation: 'wave-glow 2.4s ease-in-out infinite',
+            animationPlayState: playState,
+            willChange: 'transform, opacity',
           } as CSSProperties
         }
       />
@@ -63,6 +73,8 @@ function AnimatedLogo({ className }: { className?: string }) {
               transformBox: 'fill-box',
               transformOrigin: 'center',
               animation: `wave-bounce ${bar.duration}s ease-in-out ${bar.delay}s infinite`,
+              animationPlayState: playState,
+              willChange: 'transform',
             } as CSSProperties
           }
         />
@@ -70,5 +82,3 @@ function AnimatedLogo({ className }: { className?: string }) {
     </svg>
   )
 }
-
-export default AnimatedLogo

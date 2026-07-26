@@ -5,7 +5,7 @@ import { useOnboarding } from '@/context/onboarding-context'
 import { MOCK_STOCKS } from '@/data/stocks'
 import { VOICES } from '@/data/voices'
 import { cn } from '@/lib/utils'
-import AnimatedLogo from '@/components/icons/animated-logo'
+import { AnimatedLogo } from '@/components/icons/animated-logo'
 import BottomNav from '@/components/layout/bottom-nav'
 
 function HomePage() {
