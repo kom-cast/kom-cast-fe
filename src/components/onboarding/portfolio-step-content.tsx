@@ -9,6 +9,7 @@ export function PortfolioStepContent({
   isLoading,
   error,
   onRetry,
+  showPopular = true,
 }: {
   stocks: RemoteStock[]
   selected: string[]
@@ -16,6 +17,7 @@ export function PortfolioStepContent({
   isLoading: boolean
   error: string | null
   onRetry: () => void
+  showPopular?: boolean
 }) {
   if (isLoading) {
     return (
@@ -48,6 +50,11 @@ export function PortfolioStepContent({
   }
 
   return (
-    <StockAvatarList options={stocks} selected={selected} onChange={onChange} />
+    <StockAvatarList
+      options={stocks}
+      selected={selected}
+      onChange={onChange}
+      showPopular={showPopular}
+    />
   )
 }

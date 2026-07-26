@@ -31,6 +31,9 @@ export function StocksSettingsPage() {
   const codesByName = new Map(allStocks.map((s) => [s.name, s.code]))
   const stocksByCode = new Map(allStocks.map((s) => [s.code, s]))
   const selected = myStocks.map((s) => s.name)
+  // NOTE: 보유 중인 종목은 위 "보유 중" 목록에서 이미 보여주니, 아래 추가용
+  // 목록(인기 종목/전체 종목)에는 안 겹치게 빼고 보여줌.
+  const addableStocks = allStocks.filter((s) => !selected.includes(s.name))
 
   // NOTE: 응답을 기다리지 않고 목록에 바로 반영(낙관적 업데이트)하고,
   // 실패하면 onError에서 원래 상태로 되돌림.
@@ -112,12 +115,13 @@ export function StocksSettingsPage() {
       <div className='mb-5 h-px bg-[#eef1f4]' />
 
       <PortfolioStepContent
-        stocks={allStocks}
+        stocks={addableStocks}
         selected={selected}
         onChange={handleChange}
         isLoading={isLoading}
         error={error instanceof Error ? error.message : null}
         onRetry={() => refetch()}
+        showPopular={false}
       />
     </SettingsLayout>
   )

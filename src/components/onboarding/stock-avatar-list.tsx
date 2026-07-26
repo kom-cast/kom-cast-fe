@@ -11,10 +11,15 @@ export function StockAvatarList({
   options,
   selected,
   onChange,
+  showPopular = true,
 }: {
   options: Stock[]
   selected: string[]
   onChange: (next: string[]) => void
+  // NOTE: 온보딩은 처음 고르는 화면이라 "인기 종목" 지름길이 유용하지만, 설정(관리)
+  // 화면은 이미 보유 종목을 뺀 목록이라 "인기"라는 말이 매번 달라져서 헷갈림 —
+  // 그래서 설정 쪽은 전체 목록만 보여줌.
+  showPopular?: boolean
 }) {
   const [query, setQuery] = useState('')
 
@@ -62,7 +67,7 @@ export function StockAvatarList({
             />
           ))}
         </div>
-      ) : (
+      ) : showPopular ? (
         <>
           <p className='mb-2.5 text-[12.5px] font-semibold text-[#8b95a1]'>
             인기 종목
@@ -78,6 +83,22 @@ export function StockAvatarList({
             ))}
           </div>
         </>
+      ) : (
+        <div className='flex flex-wrap gap-2'>
+          {options.length === 0 && (
+            <p className='w-full py-8 text-center text-[13px] text-[#8b95a1]'>
+              추가할 수 있는 종목이 없어요
+            </p>
+          )}
+          {options.map((stock) => (
+            <StockButton
+              key={stock.name}
+              stock={stock}
+              isSelected={selected.includes(stock.name)}
+              onToggle={() => toggleStock(stock.name)}
+            />
+          ))}
+        </div>
       )}
     </div>
   )
