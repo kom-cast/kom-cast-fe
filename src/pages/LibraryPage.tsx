@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, Play, Volume2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 import { fetchBriefingHistory } from '@/lib/api'
+import { formatDate } from '@/lib/format-time'
 import { cn } from '@/lib/utils'
 import { BottomNav } from '@/components/layout'
 
@@ -79,7 +80,9 @@ export function LibraryPage() {
                     <Volume2 className='h-4 w-4' />
                   </span>
                   <div className='min-w-0 flex-1'>
-                    <p className='text-xs text-muted-foreground'>{item.date}</p>
+                    <p className='text-xs text-muted-foreground'>
+                      {formatDate(item.date)}
+                    </p>
                     <p className='truncate text-sm font-medium text-foreground'>
                       {item.headline}
                     </p>
