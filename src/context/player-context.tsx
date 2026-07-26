@@ -17,6 +17,7 @@ import {
   type Briefing,
   type BriefingSegment,
 } from '@/lib/api'
+import { formatDate } from '@/lib/format-time'
 import { createMockBriefing } from '@/lib/mock-briefing'
 
 export const TODAY_BRIEFING_ID = 'today'
@@ -26,6 +27,20 @@ export const TODAY_BRIEFING_ID = 'today'
 // API 테스트용으로 켜둘 수 있게 남겨둠.
 const USE_MOCK_TODAY_BRIEFING =
   import.meta.env.VITE_USE_MOCK_TODAY_BRIEFING === 'true'
+
+// NOTE: 오늘의 브리핑이 도착했다는 토스트는 세션(탭)당 한 번만 보여줌.
+const ARRIVAL_TOAST_SHOWN_KEY = 'komcast-today-briefing-toast-shown'
+const ARRIVAL_TOAST_DURATION_MS = 3500
+
+// NOTE: 임시 추정치. 백엔드가 "아직 생성 전"과 "생성됐지만 로딩 중"을 구분해서
+// 안 주고 항상 뭔가(더미 포함) 즉시 내려주기 때문에, 프론트에서 실제로는 뭘 받았든
+// 아침 7시 이전엔 무조건 "아직 준비 안 됨"으로 취급함. 백엔드가 생성 여부를 구분해서
+// 내려주면 이 시간 추정 로직은 지우고 그 값을 쓰면 됨.
+const BRIEFING_READY_HOUR = 7
+
+function isBeforeBriefingReadyTime(): boolean {
+  return new Date().getHours() < BRIEFING_READY_HOUR
+}
 
 interface PlayerContextValue {
   activeId: string | null
@@ -42,12 +57,15 @@ interface PlayerContextValue {
   segments: BriefingSegment[]
   currentSegmentIndex: number
   hasStartedPlayback: boolean
+  isTodayNotYetReady: boolean
+  showArrivalToast: boolean
   audioRef: RefObject<HTMLAudioElement | null>
   ensureBriefing: (id?: string) => void
   retryLoad: () => void
   togglePlay: () => void
   seek: (seconds: number) => void
   setSpeed: (speed: number) => void
+  dismissArrivalToast: () => void
 }
 
 const PlayerContext = createContext<PlayerContextValue | null>(null)
@@ -78,6 +96,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [speed, setSpeed] = useState(1)
   const [hasStartedPlayback, setHasStartedPlayback] = useState(false)
+  const [showArrivalToast, setShowArrivalToast] = useState(false)
 
   const stock0 = portfolioStocks[0]?.name ?? '삼성전자'
   const stock1 = portfolioStocks[1]?.name ?? 'SK하이닉스'
@@ -104,6 +123,10 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
         .then((result) => {
           if (requestIdRef.current !== id) return
           setBriefing(result)
+          if (sessionStorage.getItem(ARRIVAL_TOAST_SHOWN_KEY) !== 'true') {
+            sessionStorage.setItem(ARRIVAL_TOAST_SHOWN_KEY, 'true')
+            setShowArrivalToast(true)
+          }
         })
         .catch((err: Error) => {
           if (requestIdRef.current !== id) return
@@ -125,7 +148,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
         if (requestIdRef.current !== id) return
         setCustomHeadline(remote.headline)
         setCustomSubtitle(`${Math.round(remote.durationSeconds / 60)}분 브리핑`)
-        setDateLabel(remote.date)
+        setDateLabel(formatDate(remote.date))
         setBriefing({
           audioUrl: remote.audioUrl,
           durationSec: remote.durationSeconds,
@@ -152,6 +175,19 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     if (!activeId) return
     fetchBriefing(activeId)
   }
+
+  function dismissArrivalToast() {
+    setShowArrivalToast(false)
+  }
+
+  useEffect(() => {
+    if (!showArrivalToast) return
+    const timer = setTimeout(
+      () => setShowArrivalToast(false),
+      ARRIVAL_TOAST_DURATION_MS,
+    )
+    return () => clearTimeout(timer)
+  }, [showArrivalToast])
 
   useEffect(() => {
     const audio = audioRef.current
@@ -221,6 +257,9 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     return elapsed >= seg.startSec ? i : acc
   }, 0)
 
+  const isTodayNotYetReady =
+    activeId === TODAY_BRIEFING_ID && isBeforeBriefingReadyTime()
+
   const value: PlayerContextValue = {
     activeId,
     dateLabel,
@@ -236,12 +275,15 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     segments,
     currentSegmentIndex,
     hasStartedPlayback,
+    isTodayNotYetReady,
+    showArrivalToast,
     audioRef,
     ensureBriefing,
     retryLoad,
     togglePlay,
     seek,
     setSpeed,
+    dismissArrivalToast,
   }
 
   return (

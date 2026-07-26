@@ -21,6 +21,7 @@ export function PlayerPage() {
     durationSeconds,
     progress,
     currentSegmentIndex,
+    isTodayNotYetReady,
     ensureBriefing,
     retryLoad,
     togglePlay,
@@ -57,12 +58,13 @@ export function PlayerPage() {
             isPlaying={isPlaying}
             currentSegmentIndex={currentSegmentIndex}
             elapsed={elapsed}
+            isTodayNotYetReady={isTodayNotYetReady}
             onToggleScript={() => setShowScript((v) => !v)}
             onRetry={retryLoad}
             onSeek={seek}
           />
 
-          {briefing && (
+          {briefing && !isTodayNotYetReady && (
             <div className='space-y-1'>
               <p className='text-lg leading-snug font-bold break-keep'>
                 {headline}
@@ -78,7 +80,7 @@ export function PlayerPage() {
           progress={progress}
           isPlaying={isPlaying}
           speed={speed}
-          disabled={!briefing}
+          disabled={!briefing || isTodayNotYetReady}
           onSeek={seek}
           onTogglePlay={togglePlay}
           onSetSpeed={setSpeed}

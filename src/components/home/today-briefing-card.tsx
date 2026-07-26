@@ -1,10 +1,11 @@
-import { Maximize2, Pause, Play } from 'lucide-react'
+import { AlertCircle, Maximize2, Pause, Play } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 import { TODAY_BRIEFING_ID, usePlayer } from '@/context/player-context'
 import { formatMinutesSeconds } from '@/lib/format-time'
 import { DialogueBubbleRow } from '@/components/dialogue-bubble-row'
 import { KomiMascot, KosMascot } from '@/components/icons'
+import { MascotBubble } from '@/components/mascot-bubble'
 
 export function TodayBriefingCard() {
   const {
@@ -17,6 +18,7 @@ export function TodayBriefingCard() {
     durationSeconds,
     segments,
     currentSegmentIndex,
+    isTodayNotYetReady,
     retryLoad,
     togglePlay,
     seek,
@@ -25,6 +27,59 @@ export function TodayBriefingCard() {
   const previousSegment =
     currentSegmentIndex > 0 ? segments[currentSegmentIndex - 1] : undefined
   const currentSegment = segments[currentSegmentIndex]
+
+  if (isTodayNotYetReady) {
+    return (
+      <div className='relative mb-8 flex h-64 flex-col items-center justify-center gap-4 overflow-hidden rounded-3xl bg-[#191f28] px-6 text-center text-white'>
+        <div
+          aria-hidden
+          className='pointer-events-none absolute -top-10 -right-10 h-40 w-40 rounded-full bg-brand/25 blur-3xl'
+        />
+        <div className='relative flex items-end justify-center gap-3'>
+          <MascotBubble
+            mascot='kos'
+            color='var(--brand)'
+            text='조금만 기다려주세요'
+            delaySeconds={0}
+            flip
+          />
+          <MascotBubble
+            mascot='komi'
+            color='#3e9bff'
+            text='준비하고 있어요!'
+            delaySeconds={0.15}
+          />
+        </div>
+        <p className='relative text-sm font-bold break-keep'>
+          오늘의 브리핑은 아침 7시에 준비돼요
+        </p>
+      </div>
+    )
+  }
+
+  if (loadError) {
+    return (
+      <div className='relative mb-8 flex h-64 flex-col items-center justify-center gap-3 overflow-hidden rounded-3xl bg-[#191f28] px-6 text-center text-white'>
+        <div
+          aria-hidden
+          className='pointer-events-none absolute -top-10 -right-10 h-40 w-40 rounded-full bg-brand/25 blur-3xl'
+        />
+        <span className='relative flex h-12 w-12 items-center justify-center rounded-full bg-white/5'>
+          <AlertCircle className='h-5 w-5 text-white/60' />
+        </span>
+        <p className='relative text-sm font-bold break-keep'>
+          오늘의 브리핑을 불러오지 못했어요
+        </p>
+        <button
+          type='button'
+          onClick={retryLoad}
+          className='relative rounded-full bg-white/10 px-4 py-2 text-xs font-semibold hover:bg-white/15'
+        >
+          다시 시도
+        </button>
+      </div>
+    )
+  }
 
   return (
     <div className='relative mb-8 flex h-80 flex-col overflow-hidden rounded-3xl bg-[#191f28] p-6 text-white'>
@@ -45,31 +100,16 @@ export function TodayBriefingCard() {
 
       <div className='relative flex min-h-0 flex-1 flex-col gap-4'>
         <div className='flex min-h-0 flex-1 flex-col justify-center'>
-          {loadError ? (
-            <div className='flex items-center justify-between gap-3 rounded-2xl bg-white/5 px-3.5 py-3'>
-              <p className='text-xs text-white/50'>
-                브리핑을 불러오지 못했어요
-              </p>
-              <button
-                type='button'
-                onClick={retryLoad}
-                className='shrink-0 rounded-full bg-white/10 px-3 py-1.5 text-xs font-semibold hover:bg-white/15'
-              >
-                다시 시도
-              </button>
-            </div>
-          ) : !briefing ? (
-            <div className='flex items-center gap-2.5 rounded-2xl bg-white/5 px-3.5 py-3'>
-              <span
-                aria-hidden='true'
-                className='h-1.5 w-1.5 shrink-0 rounded-full bg-brand'
-                style={{
-                  animation: 'live-pulse 1.4s ease-in-out infinite',
-                }}
-              />
-              <p className='text-xs text-white/50'>
-                코스와 코미가 오늘 브리핑을 준비하고 있어요...
-              </p>
+          {!briefing ? (
+            <div className='space-y-2' aria-label='브리핑 준비 중'>
+              <div className='flex items-start gap-2'>
+                <span className='h-7 w-7 shrink-0 animate-pulse rounded-full bg-white/10' />
+                <span className='h-8 w-3/4 animate-pulse rounded-2xl rounded-tl-lg bg-white/10' />
+              </div>
+              <div className='flex items-start gap-2'>
+                <span className='h-7 w-7 shrink-0 animate-pulse rounded-full bg-white/10' />
+                <span className='h-8 w-1/2 animate-pulse rounded-2xl rounded-tl-lg bg-white/10' />
+              </div>
             </div>
           ) : (
             currentSegment && (
@@ -100,7 +140,7 @@ export function TodayBriefingCard() {
           )}
         </div>
 
-        {briefing && !loadError && (
+        {briefing && (
           <div className='flex shrink-0 items-center gap-3'>
             <button
               type='button'

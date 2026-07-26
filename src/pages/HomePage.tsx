@@ -5,6 +5,7 @@ import { useOnboarding } from '@/context/onboarding-context'
 import { usePlayer } from '@/context/player-context'
 import { fetchBriefingHistory, getMyStocks } from '@/lib/api'
 import {
+  BriefingArrivalToast,
   GreetingHeader,
   MyStocksSection,
   RecentLibrarySection,
@@ -52,6 +53,7 @@ export function HomePage() {
 
   return (
     <div className='min-h-svh bg-background pb-40'>
+      <BriefingArrivalToast />
       <div className='mx-auto w-full max-w-sm px-5 py-6'>
         <GreetingHeader nickname={nickname} dateLabel={dateLabel} />
 
