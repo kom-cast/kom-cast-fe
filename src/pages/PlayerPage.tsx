@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom'
 import { useOnboarding } from '@/context/onboarding-context'
 import { MOCK_STOCKS } from '@/data/stocks'
 import { cn } from '@/lib/utils'
-import AnimatedLogo from '@/components/icons/animated-logo'
+import { AnimatedLogo } from '@/components/icons/animated-logo'
 
 const SPEEDS = [0.5, 0.75, 1, 1.25, 1.5]
 const WAVE_HEIGHTS = [
