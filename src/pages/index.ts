@@ -6,4 +6,12 @@ export { PlayerPage } from './PlayerPage'
 export { MyStocksPage } from './MyStocksPage'
 export { LibraryPage } from './LibraryPage'
 
+export { MyPage } from './MyPage'
+export { NotificationsPage } from './NotificationsPage'
+
+export { StocksSettingsPage } from './settings/StocksSettingsPage'
+export { SectorsSettingsPage } from './settings/SectorsSettingsPage'
+export { NotificationSettingsPage } from './settings/NotificationSettingsPage'
+export { StubSettingsPage } from './settings/StubSettingsPage'
+
 export { NotFoundPage } from './NotFoundPage'
