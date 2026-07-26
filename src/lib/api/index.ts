@@ -1,6 +1,6 @@
 export { apiClient, API_BASE_URL } from './client'
 export { ttsApiClient, TTS_API_BASE_URL } from './tts-client'
-export * from './sectors'
+export * from './industries'
 export * from './stocks'
 export * from './briefings'
 export * from './briefing-history'

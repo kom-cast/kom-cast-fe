@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { ArrowRight, Plus } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
-import { getMySectors, getMyStocks } from '@/lib/api'
+import { getMyIndustries, getMyStocks } from '@/lib/api'
 import { BottomNav } from '@/components/layout'
 import { PortfolioStockList } from '@/components/stocks'
 
@@ -17,25 +17,25 @@ export function MyStocksPage() {
     queryFn: getMyStocks,
   })
 
-  // TODO(backend): GET /sectors/my 아직 없어서 항상 실패 (getMySectors 참고)
   const {
-    data: sectors = [],
-    isLoading: sectorsLoading,
-    error: sectorsError,
-    refetch: refetchSectors,
+    data: myIndustries = [],
+    isLoading: industriesLoading,
+    error: industriesError,
+    refetch: refetchIndustries,
   } = useQuery({
-    queryKey: ['mySectors'],
-    queryFn: getMySectors,
+    queryKey: ['myIndustries'],
+    queryFn: getMyIndustries,
   })
+  const industries = myIndustries.map((i) => i.name)
 
   return (
     <div className='min-h-svh bg-background pb-40'>
       <div className='mx-auto w-full max-w-sm px-5 py-6'>
         <h1 className='mb-5 text-xl font-bold text-foreground'>내 종목</h1>
 
-        {!sectorsLoading && !sectorsError && sectors.length === 0 && (
+        {!industriesLoading && !industriesError && industries.length === 0 && (
           <Link
-            to='/settings/sectors'
+            to='/settings/industries'
             className='mb-6 flex items-center justify-between rounded-2xl bg-brand/10 px-4 py-3 text-sm font-medium text-brand'
           >
             관심 산업군을 추가하면 더 정확해져요
@@ -70,11 +70,11 @@ export function MyStocksPage() {
         <div className='mb-3 flex items-center justify-between'>
           <p className='text-base font-semibold text-foreground'>관심 산업군</p>
           <span className='text-sm text-muted-foreground'>
-            {sectors.length}개
+            {industries.length}개
           </span>
         </div>
 
-        {sectorsLoading ? (
+        {industriesLoading ? (
           <div className='mb-2.5 flex flex-wrap gap-2'>
             {Array.from({ length: 4 }).map((_, i) => (
               <span
@@ -83,28 +83,28 @@ export function MyStocksPage() {
               />
             ))}
           </div>
-        ) : sectorsError ? (
+        ) : industriesError ? (
           <div className='mb-2.5 flex flex-col items-center gap-3 rounded-2xl bg-muted/50 py-8 text-center'>
             <p className='text-[13px] text-muted-foreground'>
               관심 산업군을 불러오지 못했어요
             </p>
             <button
               type='button'
-              onClick={() => refetchSectors()}
+              onClick={() => refetchIndustries()}
               className='rounded-full bg-background px-4 py-2 text-xs font-semibold text-foreground'
             >
               다시 시도
             </button>
           </div>
         ) : (
-          sectors.length > 0 && (
+          industries.length > 0 && (
             <div className='mb-2.5 flex flex-wrap gap-2'>
-              {sectors.map((sector) => (
+              {industries.map((industry) => (
                 <span
-                  key={sector}
+                  key={industry}
                   className='rounded-full bg-muted/50 px-3.5 py-2 text-sm font-medium text-foreground'
                 >
-                  {sector}
+                  {industry}
                 </span>
               ))}
             </div>
@@ -112,7 +112,7 @@ export function MyStocksPage() {
         )}
 
         <Link
-          to='/settings/sectors'
+          to='/settings/industries'
           className='flex items-center justify-center gap-1.5 rounded-2xl border border-dashed border-[#e5e8eb] py-3.5 text-sm font-medium text-muted-foreground'
         >
           <Plus className='h-4 w-4' />

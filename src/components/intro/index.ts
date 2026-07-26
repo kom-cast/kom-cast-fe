@@ -1,5 +1,5 @@
 export { BriefingPreviewCard } from './briefing-preview-card'
 export { Marquee } from './marquee'
 export { NewsTickerMarquee } from './news-ticker-marquee'
-export { SectorWordMarquee } from './sector-word-marquee'
+export { IndustryWordMarquee } from './industry-word-marquee'
 export { StockTickerMarquee } from './stock-ticker-marquee'

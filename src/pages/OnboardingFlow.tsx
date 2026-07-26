@@ -4,28 +4,28 @@ import { ChevronLeft } from 'lucide-react'
 
 import { useOnboarding } from '@/context/onboarding-context'
 import {
-  getAllSectors,
+  getAllIndustries,
   getAllStocks,
-  registerMySector,
-  registerMyStock,
+  registerMyIndustriesBatch,
+  registerMyStocksBatch,
 } from '@/lib/api'
 import { cn } from '@/lib/utils'
 import {
+  IndustriesStepContent,
   OnboardingComplete,
   OnboardingLayout,
   PortfolioStepContent,
-  SectorsStepContent,
   SelectionStrip,
 } from '@/components/onboarding'
 
-const STEPS = ['portfolio', 'sectors'] as const
+const STEPS = ['portfolio', 'industries'] as const
 
 export function OnboardingFlow() {
-  const { portfolio, setPortfolio, sectors, setSectors } = useOnboarding()
+  const { portfolio, setPortfolio, industries, setIndustries } = useOnboarding()
   const [stepIndex, setStepIndex] = useState(0)
   const [completed, setCompleted] = useState(false)
 
-  const isSectorsStep = STEPS[stepIndex] === 'sectors'
+  const isIndustriesStep = STEPS[stepIndex] === 'industries'
   const isLastStep = stepIndex === STEPS.length - 1
 
   const {
@@ -39,14 +39,15 @@ export function OnboardingFlow() {
   })
 
   const {
-    data: sectorOptions = [],
-    isLoading: sectorsLoading,
-    error: sectorsError,
-    refetch: loadSectors,
+    data: allIndustries = [],
+    isLoading: industriesLoading,
+    error: industriesError,
+    refetch: loadIndustries,
   } = useQuery({
-    queryKey: ['sectors'],
-    queryFn: getAllSectors,
+    queryKey: ['industries'],
+    queryFn: getAllIndustries,
   })
+  const industryOptions = allIndustries.map((i) => i.name)
 
   const submitMutation = useMutation({
     mutationFn: async () => {
@@ -55,22 +56,12 @@ export function OnboardingFlow() {
         .map((name) => codesByName.get(name))
         .filter((code): code is string => Boolean(code))
 
-      // TODO(backend): POST /stocks/my 배치 등록 엔드포인트 있으면 좋음 (현재 단건 반복 호출)
       if (codes.length > 0) {
-        try {
-          await Promise.all(
-            codes.map((code) => registerMyStock(code, 'PORTFOLIO')),
-          )
-        } catch (err) {
-          console.warn('보유 종목 등록 실패', err)
-        }
+        await registerMyStocksBatch(codes, 'PORTFOLIO')
       }
 
-      // TODO(backend): POST /sectors/my 아직 없어서 항상 실패 (실패해도 온보딩 완료는 진행)
-      try {
-        await Promise.all(sectors.map((sector) => registerMySector(sector)))
-      } catch (err) {
-        console.warn('관심 산업군 등록 실패 (백엔드 엔드포인트 준비 전)', err)
+      if (industries.length > 0) {
+        await registerMyIndustriesBatch(industries)
       }
     },
     onSuccess: () => setCompleted(true),
@@ -80,8 +71,8 @@ export function OnboardingFlow() {
     return <OnboardingComplete />
   }
 
-  const selectedCount = isSectorsStep ? sectors.length : portfolio.length
-  const isReady = isSectorsStep || selectedCount > 0
+  const selectedCount = isIndustriesStep ? industries.length : portfolio.length
+  const isReady = isIndustriesStep || selectedCount > 0
 
   function goNext() {
     if (isLastStep) {
@@ -100,7 +91,7 @@ export function OnboardingFlow() {
       stepIndex={stepIndex}
       totalSteps={2}
       title={
-        isSectorsStep ? (
+        isIndustriesStep ? (
           <>
             관심 있는 산업군을
             <br />
@@ -116,9 +107,9 @@ export function OnboardingFlow() {
       }
       strip={
         <SelectionStrip
-          items={isSectorsStep ? sectors : portfolio}
+          items={isIndustriesStep ? industries : portfolio}
           emptyLabel={
-            isSectorsStep
+            isIndustriesStep
               ? '아직 선택한 산업군이 없어요'
               : '아직 선택한 종목이 없어요'
           }
@@ -184,14 +175,16 @@ export function OnboardingFlow() {
         </div>
       }
     >
-      {isSectorsStep ? (
-        <SectorsStepContent
-          sectors={sectorOptions}
-          selected={sectors}
-          onChange={setSectors}
-          isLoading={sectorsLoading}
-          error={sectorsError instanceof Error ? sectorsError.message : null}
-          onRetry={() => loadSectors()}
+      {isIndustriesStep ? (
+        <IndustriesStepContent
+          industries={industryOptions}
+          selected={industries}
+          onChange={setIndustries}
+          isLoading={industriesLoading}
+          error={
+            industriesError instanceof Error ? industriesError.message : null
+          }
+          onRetry={() => loadIndustries()}
         />
       ) : (
         <PortfolioStepContent

@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom'
 import { AnimatedLogo } from '@/components/icons'
 import {
   BriefingPreviewCard,
+  IndustryWordMarquee,
   NewsTickerMarquee,
-  SectorWordMarquee,
   StockTickerMarquee,
 } from '@/components/intro'
 import { Button } from '@/components/ui/button'
@@ -48,7 +48,7 @@ export function IntroPage() {
           <div className='origin-left scale-[0.94] space-y-2.5 opacity-70'>
             <StockTickerMarquee />
             <NewsTickerMarquee />
-            <SectorWordMarquee />
+            <IndustryWordMarquee />
           </div>
         </div>
 

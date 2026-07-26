@@ -9,13 +9,13 @@ import {
 interface OnboardingState {
   nickname: string
   portfolio: string[]
-  sectors: string[]
+  industries: string[]
 }
 
 const DEFAULT_STATE: OnboardingState = {
   nickname: '민준',
   portfolio: [],
-  sectors: [],
+  industries: [],
 }
 
 const STORAGE_KEY = 'komcast-onboarding'
@@ -23,7 +23,7 @@ const STORAGE_KEY = 'komcast-onboarding'
 interface OnboardingContextValue extends OnboardingState {
   setNickname: (next: string) => void
   setPortfolio: (next: string[]) => void
-  setSectors: (next: string[]) => void
+  setIndustries: (next: string[]) => void
 }
 
 const OnboardingContext = createContext<OnboardingContextValue | null>(null)
@@ -49,7 +49,7 @@ export function OnboardingProvider({ children }: { children: ReactNode }) {
     ...state,
     setNickname: (nickname) => setState((s) => ({ ...s, nickname })),
     setPortfolio: (portfolio) => setState((s) => ({ ...s, portfolio })),
-    setSectors: (sectors) => setState((s) => ({ ...s, sectors })),
+    setIndustries: (industries) => setState((s) => ({ ...s, industries })),
   }
 
   return (

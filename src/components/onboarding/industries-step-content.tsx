@@ -1,7 +1,7 @@
 import { IndustryAvatarGrid } from './industry-avatar-grid'
 
-export function SectorsStepContent({
-  sectors,
+export function IndustriesStepContent({
+  industries,
   selected,
   onChange,
   isLoading,
@@ -9,7 +9,7 @@ export function SectorsStepContent({
   onRetry,
   scrollable = true,
 }: {
-  sectors: string[]
+  industries: string[]
   selected: string[]
   onChange: (next: string[]) => void
   isLoading: boolean
@@ -49,7 +49,7 @@ export function SectorsStepContent({
 
   return (
     <IndustryAvatarGrid
-      options={sectors}
+      options={industries}
       selected={selected}
       onChange={onChange}
       scrollable={scrollable}

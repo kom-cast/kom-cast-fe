@@ -21,7 +21,7 @@ interface SettingRow {
 
 const SETTING_ROWS: SettingRow[] = [
   { Icon: Heart, label: '보유종목 관리', to: '/settings/stocks' },
-  { Icon: Star, label: '관심섹터 관리', to: '/settings/sectors' },
+  { Icon: Star, label: '관심 산업군 관리', to: '/settings/industries' },
   { Icon: CreditCard, label: '구독 플랜 관리', to: '/settings/subscription' },
   { Icon: Bell, label: '알림 설정', to: '/settings/notifications' },
   { Icon: Database, label: '마이데이터 연동 상태', to: '/settings/mydata' },

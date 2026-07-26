@@ -5,8 +5,8 @@ import { KomiMascot, KosMascot } from '@/components/icons'
 
 export function OnboardingComplete() {
   const navigate = useNavigate()
-  const { portfolio, sectors } = useOnboarding()
-  const summary = [...portfolio, ...sectors]
+  const { portfolio, industries } = useOnboarding()
+  const summary = [...portfolio, ...industries]
 
   function handleDone() {
     navigate('/home', { replace: true })

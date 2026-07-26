@@ -4,6 +4,7 @@ import { OnboardingProvider } from '@/context/onboarding-context'
 import { PlayerProvider } from '@/context/player-context'
 import {
   HomePage,
+  IndustriesSettingsPage,
   IntroPage,
   LibraryPage,
   MyPage,
@@ -13,7 +14,6 @@ import {
   NotificationsPage,
   OnboardingFlow,
   PlayerPage,
-  SectorsSettingsPage,
   StocksSettingsPage,
   StubSettingsPage,
 } from '@/pages'
@@ -32,7 +32,10 @@ function App() {
           <Route path='/my' element={<MyPage />} />
           <Route path='/notifications' element={<NotificationsPage />} />
           <Route path='/settings/stocks' element={<StocksSettingsPage />} />
-          <Route path='/settings/sectors' element={<SectorsSettingsPage />} />
+          <Route
+            path='/settings/industries'
+            element={<IndustriesSettingsPage />}
+          />
           <Route
             path='/settings/subscription'
             element={<StubSettingsPage title='구독 플랜 관리' />}

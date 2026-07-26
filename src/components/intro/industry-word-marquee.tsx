@@ -13,7 +13,7 @@ const WORDS = [
   '코스닥',
 ]
 
-export function SectorWordMarquee({
+export function IndustryWordMarquee({
   durationSeconds = 44,
 }: {
   durationSeconds?: number

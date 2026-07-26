@@ -37,6 +37,17 @@ export async function registerMyStock(
   }
 }
 
+export async function registerMyStocksBatch(
+  codes: string[],
+  type: 'PORTFOLIO' | 'INTEREST',
+): Promise<void> {
+  try {
+    await apiClient.post('/stocks/my/batch', { codes, type })
+  } catch (err) {
+    throw toError(err, '종목 등록')
+  }
+}
+
 export async function deleteMyStock(code: string): Promise<void> {
   try {
     await apiClient.delete(`/stocks/my/${code}`)

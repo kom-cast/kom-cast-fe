@@ -17,7 +17,7 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 
-// NOTE: 산업군 이름 자체는 GET /sectors로 받아오고, 아이콘만 로컬에서 매핑함
+// NOTE: 산업군 이름 자체는 GET /industries로 받아오고, 아이콘만 로컬에서 매핑함
 // 매핑에 없는 이름이 오면 DEFAULT_INDUSTRY_ICON으로 대체
 export const INDUSTRY_ICONS: Record<string, LucideIcon> = {
   반도체: Cpu,
