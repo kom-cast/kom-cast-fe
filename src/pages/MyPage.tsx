@@ -14,7 +14,7 @@ import { Link, useNavigate } from 'react-router-dom'
 
 import { useOnboarding } from '@/context/onboarding-context'
 import { cn } from '@/lib/utils'
-import BottomNav from '@/components/layout/bottom-nav'
+import { BottomNav } from '@/components/layout/bottom-nav'
 import { Button } from '@/components/ui/button'
 
 interface SettingRow {
