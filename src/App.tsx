@@ -5,7 +5,6 @@ import HomePage from '@/pages/HomePage'
 import LibraryPage from '@/pages/LibraryPage'
 import LoginPage from '@/pages/LoginPage'
 import MyPage from '@/pages/MyPage'
-import NotFoundPage from '@/pages/NotFoundPage'
 import NotificationsPage from '@/pages/NotificationsPage'
 import OnboardingFlow from '@/pages/OnboardingFlow'
 import PlayerPage from '@/pages/PlayerPage'
@@ -16,6 +15,7 @@ import StocksSettingsPage from '@/pages/settings/StocksSettingsPage'
 import StubSettingsPage from '@/pages/settings/StubSettingsPage'
 import VoiceSettingsPage from '@/pages/settings/VoiceSettingsPage'
 import SignupPage from '@/pages/SignupPage'
+import { NotFoundPage } from '@/pages'
 
 function App() {
   return (
