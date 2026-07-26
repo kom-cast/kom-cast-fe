@@ -1,6 +1,6 @@
-import SettingsLayout from '@/components/settings/settings-layout'
+import { SettingsLayout } from '@/components/settings'
 
-function StubSettingsPage({ title }: { title: string }) {
+export function StubSettingsPage({ title }: { title: string }) {
   return (
     <SettingsLayout title={title}>
       <div className='flex flex-col items-center justify-center gap-2 rounded-2xl bg-muted/50 py-16 text-center'>
@@ -10,5 +10,3 @@ function StubSettingsPage({ title }: { title: string }) {
     </SettingsLayout>
   )
 }
-
-export default StubSettingsPage
