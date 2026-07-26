@@ -2,7 +2,7 @@ import { Play, Volume2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 import { cn } from '@/lib/utils'
-import BottomNav from '@/components/layout/bottom-nav'
+import { BottomNav } from '@/components/layout/bottom-nav'
 
 const SAVED_BRIEFINGS = [
   {
