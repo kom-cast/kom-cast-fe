@@ -2,7 +2,7 @@ import { type ReactNode } from 'react'
 import { ChevronLeft } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
-function SettingsLayout({
+export function SettingsLayout({
   title,
   children,
 }: {
@@ -17,7 +17,7 @@ function SettingsLayout({
         <div className='mb-6 flex items-center gap-2'>
           <button
             type='button'
-            onClick={() => navigate('/my')}
+            onClick={() => navigate(-1)}
             aria-label='뒤로'
             className='-ml-2 flex h-10 w-10 items-center justify-center rounded-full hover:bg-muted'
           >
@@ -31,5 +31,3 @@ function SettingsLayout({
     </div>
   )
 }
-
-export default SettingsLayout
