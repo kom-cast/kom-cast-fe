@@ -41,8 +41,6 @@ export interface NotificationSettings {
   notifyMarketing: boolean
 }
 
-// NOTE: /preferences 전체 대신 알림 설정만 다루는 전용 엔드포인트로 분리 요청
-// TODO(backend): GET/PATCH /notifications/settings 엔드포인트 추가 요청
 export async function getNotificationSettings(): Promise<NotificationSettings> {
   try {
     const { data } = await apiClient.get<NotificationSettings>(
