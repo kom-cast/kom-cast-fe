@@ -28,7 +28,7 @@ export function PlayerPage() {
     seek,
     setSpeed,
   } = usePlayer()
-  const [showScript, setShowScript] = useState(false)
+  const [showScript, setShowScript] = useState(true)
 
   const isHistorical = briefingId !== TODAY_BRIEFING_ID
   const notFound = isHistorical && loadError !== null
@@ -38,18 +38,22 @@ export function PlayerPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [briefingId])
 
+  function toggleScript() {
+    setShowScript((prev) => !prev)
+  }
+
   return (
-    <div className='min-h-svh bg-[#0b0d16]'>
-      <div className='mx-auto flex min-h-svh w-full max-w-sm flex-col px-5 py-6 text-white'>
+    <div className='h-svh bg-[#0b0d16]'>
+      <div className='mx-auto flex h-svh w-full max-w-sm flex-col px-5 py-6 text-white'>
         <PlayerHeader
           dateLabel={dateLabel}
           isPlaying={isPlaying}
           showScript={showScript}
           onBack={() => navigate(-1)}
-          onToggleScript={() => setShowScript((v) => !v)}
+          onToggleScript={toggleScript}
         />
 
-        <div className='flex flex-1 flex-col justify-center gap-10'>
+        <div className='flex min-h-0 flex-1 flex-col justify-center gap-6'>
           <PlayerHero
             briefing={briefing}
             loadError={loadError}
@@ -59,17 +63,17 @@ export function PlayerPage() {
             currentSegmentIndex={currentSegmentIndex}
             elapsed={elapsed}
             isTodayNotYetReady={isTodayNotYetReady}
-            onToggleScript={() => setShowScript((v) => !v)}
+            onToggleScript={toggleScript}
             onRetry={retryLoad}
             onSeek={seek}
           />
 
           {briefing && !isTodayNotYetReady && (
-            <div className='space-y-1'>
-              <p className='text-lg leading-snug font-bold break-keep'>
+            <div className='space-y-0.5'>
+              <p className='text-base leading-snug font-bold break-keep'>
                 {headline}
               </p>
-              <p className='text-sm text-white/50'>{subtitle}</p>
+              <p className='text-xs text-white/50'>{subtitle}</p>
             </div>
           )}
         </div>

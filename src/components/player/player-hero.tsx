@@ -47,7 +47,8 @@ export function PlayerHero({
       }}
       aria-label={isInteractive ? '탭해서 대본 보기 전환' : undefined}
       className={cn(
-        'relative flex max-h-95 flex-1 flex-col overflow-hidden rounded-3xl bg-[#191f28]',
+        'relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-3xl bg-[#191f28]',
+        !showScript && 'max-h-95',
         isInteractive && 'cursor-pointer',
       )}
     >

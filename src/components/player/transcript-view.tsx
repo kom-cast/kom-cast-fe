@@ -68,6 +68,18 @@ export function TranscriptView({
   const containerRef = useRef<HTMLDivElement>(null)
   const activeRef = useRef<HTMLDivElement>(null)
 
+  // NOTE: 같은 종목이 대본 중간에 여러 번 등장할 수 있어서(예: 2차전지 얘기가
+  // 두 번 나옴) 종목 칩은 이름 기준으로 한 번씩만, 탭하면 그 종목이 "처음"
+  // 등장하는 위치로 이동함.
+  const firstStartSecByStock = new Map<string, number>()
+  for (const segment of segments) {
+    if (!firstStartSecByStock.has(segment.stock)) {
+      firstStartSecByStock.set(segment.stock, segment.startSec)
+    }
+  }
+  const stocks = [...firstStartSecByStock.keys()]
+  const activeStock = segments[currentSegmentIndex]?.stock
+
   useEffect(() => {
     const container = containerRef.current
     const active = activeRef.current
@@ -79,53 +91,90 @@ export function TranscriptView({
   }, [currentSegmentIndex])
 
   return (
-    <div
-      ref={containerRef}
-      className='relative z-10 min-h-0 flex-1 space-y-5 overflow-y-auto px-5 py-5 [&::-webkit-scrollbar]:hidden'
-    >
-      {groups.map((group, gi) => (
-        <div key={gi} className='space-y-2.5'>
-          <div className='flex items-center gap-2'>
-            <span className='shrink-0 text-[11px] font-bold text-white/50'>
-              {group.stock}
-            </span>
-            <span className='h-px flex-1 bg-white/10' />
-          </div>
-          <div className='space-y-3'>
-            {group.items.map(({ segment, index }) => {
-              const isActive = index === currentSegmentIndex
-              return (
-                <div
-                  key={`${segment.startSec}-${index}`}
-                  ref={isActive ? activeRef : undefined}
-                >
-                  <button
-                    type='button'
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      onSeek(segment.startSec)
-                    }}
+    <div className='relative z-10 flex min-h-0 flex-1 flex-col'>
+      {stocks.length > 1 && (
+        <div className='flex shrink-0 gap-1.5 overflow-x-auto px-5 pt-4 pb-2 [&::-webkit-scrollbar]:hidden'>
+          {stocks.map((stock) => (
+            <button
+              key={stock}
+              type='button'
+              onClick={(e) => {
+                e.stopPropagation()
+                onSeek(firstStartSecByStock.get(stock) ?? 0)
+              }}
+              className={cn(
+                'shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold whitespace-nowrap transition-colors',
+                stock === activeStock
+                  ? 'bg-brand text-white'
+                  : 'bg-white/10 text-white/60 hover:bg-white/15',
+              )}
+            >
+              {stock}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <div
+        ref={containerRef}
+        className='relative min-h-0 flex-1 space-y-5 overflow-y-auto px-5 py-5 [&::-webkit-scrollbar]:hidden'
+      >
+        {groups.map((group, gi) => (
+          <div key={gi} className='space-y-2.5'>
+            <button
+              type='button'
+              onClick={(e) => {
+                e.stopPropagation()
+                onSeek(group.items[0].segment.startSec)
+              }}
+              className='flex w-full items-center gap-2 text-left'
+            >
+              <span className='shrink-0 text-[11px] font-bold text-white/50 hover:text-white/80'>
+                {group.stock}
+              </span>
+              <span className='h-px flex-1 bg-white/10' />
+            </button>
+            <div className='space-y-3'>
+              {group.items.map(({ segment, index }) => {
+                const isActive = index === currentSegmentIndex
+                const isKos = segment.speaker === '코스'
+                return (
+                  <div
+                    key={`${segment.startSec}-${index}`}
+                    ref={isActive ? activeRef : undefined}
                     className={cn(
-                      'mb-1 ml-9 flex items-center gap-1.5 text-xs font-medium tabular-nums',
-                      isActive ? 'text-white/60' : 'text-white/25',
+                      'flex flex-col gap-1',
+                      isKos ? 'items-start' : 'items-end',
                     )}
                   >
-                    <span className='font-semibold'>{segment.speaker}</span>
-                    <span>{formatTime(segment.startSec)}</span>
-                  </button>
-                  <DialogueBubbleRow
-                    segment={segment}
-                    active={isActive}
-                    elapsed={elapsed}
-                    onSeekWord={onSeek}
-                    size='sm'
-                  />
-                </div>
-              )
-            })}
+                    <button
+                      type='button'
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onSeek(segment.startSec)
+                      }}
+                      className={cn(
+                        'flex items-center gap-1.5 text-xs font-medium tabular-nums',
+                        isActive ? 'text-white/60' : 'text-white/25',
+                      )}
+                    >
+                      <span className='font-semibold'>{segment.speaker}</span>
+                      <span>{formatTime(segment.startSec)}</span>
+                    </button>
+                    <DialogueBubbleRow
+                      segment={segment}
+                      active={isActive}
+                      elapsed={elapsed}
+                      onSeekWord={onSeek}
+                      size='sm'
+                    />
+                  </div>
+                )
+              })}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   )
 }

@@ -217,6 +217,24 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     if (audioRef.current) audioRef.current.playbackRate = speed
   }, [speed])
 
+  // NOTE: timeupdate 이벤트는 브라우저가 대략 초당 4번 정도로만 쏴줘서,
+  // 배속이 빠르거나 단어 길이가 짧으면 두 틱 사이에 여러 단어의 시작 시각을
+  // 한꺼번에 지나쳐버려 일부 단어가 하이라이트될 기회를 못 받음. 재생 중엔
+  // requestAnimationFrame으로 훨씬 촘촘하게 elapsed를 갱신해서 이 문제를 줄임.
+  useEffect(() => {
+    if (!isPlaying) return
+    const audio = audioRef.current
+    if (!audio) return
+
+    let frameId: number
+    const tick = () => {
+      setElapsed(audio.currentTime)
+      frameId = requestAnimationFrame(tick)
+    }
+    frameId = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(frameId)
+  }, [isPlaying])
+
   function seek(seconds: number) {
     const audio = audioRef.current
     if (!audio || !briefing) return
