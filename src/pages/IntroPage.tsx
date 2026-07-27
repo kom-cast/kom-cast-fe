@@ -1,7 +1,6 @@
-import { ArrowRight, Info } from 'lucide-react'
+import { ArrowRight, Info, Podcast } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
-import { AnimatedLogo } from '@/components/icons'
 import {
   BriefingPreviewCard,
   IndustryWordMarquee,
@@ -22,7 +21,7 @@ export function IntroPage() {
       <div className='flex min-h-[min(100svh,800px)] w-full max-w-sm flex-col py-10'>
         <div className='space-y-3 px-4 sm:px-6'>
           <div className='flex items-center gap-1.5'>
-            <AnimatedLogo className='h-6 w-6' />
+            <Podcast className='h-5 w-5 text-brand' strokeWidth={2.2} />
             <span
               className='text-sm font-bold tracking-tight text-brand'
               style={{ fontFamily: "'Space Grotesk Variable', sans-serif" }}
@@ -34,7 +33,9 @@ export function IntroPage() {
           <h1 className='text-[32px] leading-[1.22] font-extrabold tracking-tight text-[#191f28] dark:text-foreground'>
             내 종목만 듣는
             <br />
-            <span className='text-brand'>팟캐스트, Komcast</span>
+            <span className='inline-flex items-center gap-1.5 text-brand'>
+              팟캐스트, Komcast
+            </span>
           </h1>
 
           <p className='break-keep text-[15px] leading-[1.55] font-medium text-[#8b95a1]'>

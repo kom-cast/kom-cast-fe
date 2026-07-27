@@ -1,4 +1,4 @@
-import { ChevronDown, FileText } from 'lucide-react'
+import { ChevronDown, FileText, Podcast } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 
@@ -27,7 +27,8 @@ export function PlayerHeader({
       </button>
       <div className='text-center'>
         <p className='text-sm font-semibold'>{dateLabel}</p>
-        <p className='text-xs text-white/40'>
+        <p className='flex items-center justify-center gap-1 text-xs text-white/40'>
+          <Podcast className='h-3 w-3' />
           {isPlaying ? '재생 중' : '일시정지'} · AI 브리핑
         </p>
       </div>

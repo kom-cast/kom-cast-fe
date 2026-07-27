@@ -1,4 +1,4 @@
-import { AlertCircle, Maximize2, Pause, Play } from 'lucide-react'
+import { AlertCircle, Maximize2, Pause, Play, Podcast } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 import { TODAY_BRIEFING_ID, usePlayer } from '@/context/player-context'
@@ -94,7 +94,13 @@ export function TodayBriefingCard() {
       </div>
 
       <div className='relative pr-16'>
-        <p className='text-lg leading-snug font-bold break-keep'>{headline}</p>
+        <p className='flex items-center gap-1 text-xs font-semibold text-brand'>
+          <Podcast className='h-3.5 w-3.5' />
+          오늘의 브리핑
+        </p>
+        <p className='mt-0.5 text-lg leading-snug font-bold break-keep'>
+          {headline}
+        </p>
         <p className='mt-1 text-xs text-white/50'>{subtitle}</p>
       </div>
 
