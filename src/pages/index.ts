@@ -13,5 +13,6 @@ export { StocksSettingsPage } from './settings/StocksSettingsPage'
 export { IndustriesSettingsPage } from './settings/IndustriesSettingsPage'
 export { NotificationSettingsPage } from './settings/NotificationSettingsPage'
 export { StubSettingsPage } from './settings/StubSettingsPage'
+export { MyDataSettingsPage } from './settings/MyDataSettingsPage'
 
 export { NotFoundPage } from './NotFoundPage'

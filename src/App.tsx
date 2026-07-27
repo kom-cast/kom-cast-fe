@@ -7,6 +7,7 @@ import {
   IndustriesSettingsPage,
   IntroPage,
   LibraryPage,
+  MyDataSettingsPage,
   MyPage,
   MyStocksPage,
   NotFoundPage,
@@ -44,10 +45,7 @@ function App() {
             path='/settings/notifications'
             element={<NotificationSettingsPage />}
           />
-          <Route
-            path='/settings/mydata'
-            element={<StubSettingsPage title='마이데이터 연동 상태' />}
-          />
+          <Route path='/settings/mydata' element={<MyDataSettingsPage />} />
           <Route path='*' element={<NotFoundPage />} />
         </Routes>
       </PlayerProvider>
