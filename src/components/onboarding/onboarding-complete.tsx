@@ -42,7 +42,7 @@ export function OnboardingComplete() {
           style={{ animation: 'fade-up 0.4s ease 0.45s both' }}
         >
           선택하신 종목과 산업군으로 만든
-          <br />첫 브리핑을 내일 아침 7시에 보내드릴게요
+          <br />첫 브리핑을 내일 아침 6시에 보내드릴게요
         </p>
 
         <div

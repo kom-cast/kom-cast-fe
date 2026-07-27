@@ -69,7 +69,7 @@ export function IntroPage() {
             <p className='flex items-center justify-center gap-1 pt-1 pb-2 text-center text-xs font-medium text-[#b0b8c1]'>
               <Info className='h-3 w-3 shrink-0' />
               <span className='leading-none'>
-                매일 아침 7시에 브리핑이 도착해요
+                매일 아침 6시에 브리핑이 도착해요
               </span>
             </p>
           </div>

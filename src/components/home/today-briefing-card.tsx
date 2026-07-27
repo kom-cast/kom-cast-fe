@@ -51,7 +51,7 @@ export function TodayBriefingCard() {
           />
         </div>
         <p className='relative text-sm font-bold break-keep'>
-          오늘의 브리핑은 아침 7시에 준비돼요
+          오늘의 브리핑은 아침 6시에 준비돼요
         </p>
       </div>
     )

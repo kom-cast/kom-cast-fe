@@ -34,9 +34,9 @@ const ARRIVAL_TOAST_DURATION_MS = 3500
 
 // NOTE: 임시 추정치. 백엔드가 "아직 생성 전"과 "생성됐지만 로딩 중"을 구분해서
 // 안 주고 항상 뭔가(더미 포함) 즉시 내려주기 때문에, 프론트에서 실제로는 뭘 받았든
-// 아침 7시 이전엔 무조건 "아직 준비 안 됨"으로 취급함. 백엔드가 생성 여부를 구분해서
+// 아침 6시 이전엔 무조건 "아직 준비 안 됨"으로 취급함. 백엔드가 생성 여부를 구분해서
 // 내려주면 이 시간 추정 로직은 지우고 그 값을 쓰면 됨.
-const BRIEFING_READY_HOUR = 7
+const BRIEFING_READY_HOUR = 6
 
 function isBeforeBriefingReadyTime(): boolean {
   return new Date().getHours() < BRIEFING_READY_HOUR
