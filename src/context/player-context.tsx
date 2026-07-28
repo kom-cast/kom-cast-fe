@@ -39,6 +39,13 @@ const ARRIVAL_TOAST_DURATION_MS = 3500
 // 내려주면 이 시간 추정 로직은 지우고 그 값을 쓰면 됨.
 const BRIEFING_READY_HOUR = 6
 
+// NOTE: <audio>.currentTime을 세그먼트의 startSec으로 정확히 seek해도 오디오
+// 디코더가 그 근처(대개 살짝 이전)로 스냅하는 경우가 있어서(코덱 프레임 경계 등),
+// elapsed가 목표 seg.startSec보다 아주 조금 작게 나올 수 있음. 그대로 등호 없는
+// 비교를 하면 방금 seek한 세그먼트가 아니라 그 이전 세그먼트가 "현재"로 계산돼서
+// 뱃지/구간 라벨을 눌러도 다른 구간이 활성화되는 것처럼 보임. 여유를 조금 둠.
+const SEGMENT_SEEK_EPSILON_SEC = 0.15
+
 const DEFAULT_MOCK_STOCK_0: Stock = MOCK_STOCKS[0]
 const DEFAULT_MOCK_STOCK_1: Stock = MOCK_STOCKS[1]
 
@@ -262,7 +269,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   const progress = durationSeconds > 0 ? elapsed / durationSeconds : 0
   const segments = useMemo(() => briefing?.segments ?? [], [briefing])
   const currentSegmentIndex = segments.reduce((acc, seg, i) => {
-    return elapsed >= seg.startSec ? i : acc
+    return elapsed >= seg.startSec - SEGMENT_SEEK_EPSILON_SEC ? i : acc
   }, 0)
 
   const isTodayNotYetReady =
