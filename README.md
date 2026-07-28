@@ -35,7 +35,13 @@ src/
 ├─ context/            전역 상태(Context) - 온보딩 등
 ├─ data/               목업 데이터
 ├─ lib/
-│  ├─ api/             axios 클라이언트 및 API 함수
+│  ├─ api/
+│  │  ├─ client.ts            스프링 백엔드용 axios 인스턴스(apiClient)
+│  │  ├─ briefings.ts         브리핑 도메인 타입(BriefingTarget, BriefingSegment 등)
+│  │  ├─ briefing-history.ts  브리핑 조회 API + Remote → 도메인 타입 변환(toBriefing)
+│  │  ├─ target-names.ts      종목/산업군 code → name 조회 캐시
+│  │  ├─ stocks.ts / industries.ts  종목·산업군 조회 API
+│  │  └─ tts-client.ts        komcast-tts 직접 호출용(mock 전용, 신규 화면에서 사용 금지)
 │  └─ utils.ts
 └─ pages/               라우트별 페이지 (settings 하위 라우트 포함)
 ```
@@ -55,8 +61,8 @@ cd komcast-fe
 # 2. 의존성 설치
 npm install
 
-# 3. 환경 변수 설정 (.env 파일 생성)
-echo "VITE_API_BASE_URL=http://localhost:8000" > .env
+# 3. 환경 변수 설정
+cp .env.example .env.local
 
 # 4. 개발 서버 실행
 npm run dev
@@ -66,9 +72,14 @@ npm run dev
 
 ## 환경 변수
 
+`.env.example` 참고. 필요한 값만 `.env.local`에 오버라이드하면 됩니다.
+
 | 변수명 | 설명 | 기본값 |
 | --- | --- | --- |
-| `VITE_API_BASE_URL` | 백엔드 API 서버 주소 | `http://localhost:8000` |
+| `VITE_API_BASE_URL` | kom-cast-be(Spring Boot) 도메인 API 서버 주소 | `http://localhost:8080` |
+| `VITE_TTS_API_BASE_URL` | komcast-tts(FastAPI) 실시간 브리핑 합성 서버 주소 (임시 연동, mock 전용) | `http://localhost:8000` |
+| `VITE_USE_MOCK_TODAY_BRIEFING` | `true`면 오늘의 브리핑을 kom-cast-be 대신 komcast-tts를 직접 호출하는 mock으로 받아옴 | `false` |
+| `VITE_USER_ID` | 정식 로그인 붙기 전까지 kom-cast-be가 사용자 구분에 쓰는 임시 헤더값 | `1` |
 
 ## 사용 가능한 스크립트
 
