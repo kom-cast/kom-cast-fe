@@ -10,10 +10,11 @@ import {
 } from 'react'
 
 import { useOnboarding } from '@/context/onboarding-context'
-import { MOCK_STOCKS } from '@/data/stocks'
+import { MOCK_STOCKS, type Stock } from '@/data/stocks'
 import {
   fetchBriefingById,
   fetchTodayBriefing,
+  toBriefing,
   type Briefing,
   type BriefingSegment,
 } from '@/lib/api'
@@ -37,6 +38,9 @@ const ARRIVAL_TOAST_DURATION_MS = 3500
 // 아침 6시 이전엔 무조건 "아직 준비 안 됨"으로 취급함. 백엔드가 생성 여부를 구분해서
 // 내려주면 이 시간 추정 로직은 지우고 그 값을 쓰면 됨.
 const BRIEFING_READY_HOUR = 6
+
+const DEFAULT_MOCK_STOCK_0: Stock = MOCK_STOCKS[0]
+const DEFAULT_MOCK_STOCK_1: Stock = MOCK_STOCKS[1]
 
 function isBeforeBriefingReadyTime(): boolean {
   return new Date().getHours() < BRIEFING_READY_HOUR
@@ -98,9 +102,9 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   const [hasStartedPlayback, setHasStartedPlayback] = useState(false)
   const [showArrivalToast, setShowArrivalToast] = useState(false)
 
-  const stock0 = portfolioStocks[0]?.name ?? '삼성전자'
-  const stock1 = portfolioStocks[1]?.name ?? 'SK하이닉스'
-  const stock2 = portfolioStocks[2]?.name
+  const stock0 = portfolioStocks[0] ?? DEFAULT_MOCK_STOCK_0
+  const stock1 = portfolioStocks[1] ?? DEFAULT_MOCK_STOCK_1
+  const stock2 = portfolioStocks[2]
 
   function fetchBriefing(id: string) {
     requestIdRef.current = id
@@ -113,11 +117,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     if (id === TODAY_BRIEFING_ID) {
       const request = USE_MOCK_TODAY_BRIEFING
         ? createMockBriefing(id, stock0, stock1, stock2)
-        : fetchTodayBriefing().then((remote) => ({
-            audioUrl: remote.audioUrl,
-            durationSec: remote.durationSeconds,
-            segments: remote.segments,
-          }))
+        : fetchTodayBriefing().then(toBriefing)
 
       request
         .then((result) => {
@@ -137,23 +137,13 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
 
     // NOTE: 보관함 항목의 제목/날짜는 로컬에서 미리 알 수 없고 응답에 들어있어서,
     // 조회에 성공한 뒤에야 헤더에 반영함.
-    const numericId = Number(id)
-    if (Number.isNaN(numericId)) {
-      setLoadError('브리핑을 찾을 수 없어요')
-      return
-    }
-
-    fetchBriefingById(numericId)
+    fetchBriefingById(id)
       .then((remote) => {
         if (requestIdRef.current !== id) return
         setCustomHeadline(remote.headline)
         setCustomSubtitle(`${Math.round(remote.durationSeconds / 60)}분 브리핑`)
         setDateLabel(formatDate(remote.date))
-        setBriefing({
-          audioUrl: remote.audioUrl,
-          durationSec: remote.durationSeconds,
-          segments: remote.segments,
-        })
+        setBriefing(toBriefing(remote))
       })
       .catch((err: Error) => {
         if (requestIdRef.current !== id) return

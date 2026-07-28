@@ -57,26 +57,33 @@ export function DialogueBubbleRow({
           isKos ? 'bg-brand/20 text-white' : 'bg-[#3e9bff]/18 text-white',
         )}
       >
-        {segment.words.map((word, i) => (
-          <button
-            key={i}
-            type='button'
-            onClick={(e) => {
-              e.stopPropagation()
-              onSeekWord(word.startSec)
-            }}
-            className={cn(
-              'rounded px-0.5 hover:bg-white/10',
-              i === activeWordIndex
-                ? isKos
-                  ? 'text-brand'
-                  : 'text-sky-300'
-                : 'text-white/85',
-            )}
-          >
-            {word.text}
-          </button>
-        ))}
+        {segment.words.length > 0 ? (
+          segment.words.map((word, i) => (
+            <button
+              key={i}
+              type='button'
+              onClick={(e) => {
+                e.stopPropagation()
+                onSeekWord(word.startSec)
+              }}
+              className={cn(
+                'rounded px-0.5 hover:bg-white/10',
+                i === activeWordIndex
+                  ? isKos
+                    ? 'text-brand'
+                    : 'text-sky-300'
+                  : 'text-white/85',
+              )}
+            >
+              {word.text}
+            </button>
+          ))
+        ) : (
+          // NOTE: 백엔드에 words(단어별 타이밍) 채워달라고 요청해둠. 아직 비어
+          // 오는 세그먼트가 있을 수 있어 그 경우엔 단어 단위 하이라이트/탭 대신
+          // 문장 전체를 그냥 보여주는 폴백을 유지함.
+          <span className='px-0.5 text-white/85'>{segment.text}</span>
+        )}
       </span>
     </div>
   )

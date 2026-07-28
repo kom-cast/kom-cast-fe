@@ -2,9 +2,14 @@ import { isAxiosError } from 'axios'
 
 import { TTS_API_BASE_URL, ttsApiClient } from './tts-client'
 
+export type BriefingTarget =
+  | { type: 'STOCK'; stock_code: string }
+  | { type: 'INDUSTRY'; industry_code: string }
+  | { type: 'USER' }
+
 export interface DialogueLine {
   speaker: '코스' | '코미'
-  stock: string
+  target: BriefingTarget
   text: string
 }
 
@@ -16,8 +21,9 @@ export interface WordTiming {
 
 export interface BriefingSegment {
   speaker: '코스' | '코미'
-  stock: string
+  target: BriefingTarget
   text: string
+  fraction: number | null
   startSec: number
   words: WordTiming[]
 }

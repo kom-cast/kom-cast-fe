@@ -1,19 +1,31 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
-import { type BriefingSegment } from '@/lib/api'
+import {
+  loadTargetNameMaps,
+  resolveTargetName,
+  targetKey,
+  type BriefingSegment,
+  type BriefingTarget,
+  type TargetNameMaps,
+} from '@/lib/api'
 import { formatTime } from '@/lib/format-time'
 import { cn } from '@/lib/utils'
 import { DialogueBubbleRow } from '@/components/dialogue-bubble-row'
 
-function groupByStock(segments: BriefingSegment[]) {
+function groupByTarget(segments: BriefingSegment[]) {
   return segments.reduce<
-    { stock: string; items: { segment: BriefingSegment; index: number }[] }[]
+    {
+      key: string
+      target: BriefingTarget
+      items: { segment: BriefingSegment; index: number }[]
+    }[]
   >((groups, segment, index) => {
+    const key = targetKey(segment.target)
     const last = groups[groups.length - 1]
-    if (last && last.stock === segment.stock) {
+    if (last && last.key === key) {
       last.items.push({ segment, index })
     } else {
-      groups.push({ stock: segment.stock, items: [{ segment, index }] })
+      groups.push({ key, target: segment.target, items: [{ segment, index }] })
     }
     return groups
   }, [])
@@ -64,21 +76,42 @@ export function TranscriptView({
   elapsed: number
   onSeek: (seconds: number) => void
 }) {
-  const groups = groupByStock(segments)
+  const groups = groupByTarget(segments)
   const containerRef = useRef<HTMLDivElement>(null)
   const activeRef = useRef<HTMLDivElement>(null)
+  const [nameMaps, setNameMaps] = useState<TargetNameMaps | null>(null)
 
-  // NOTE: 같은 종목이 대본 중간에 여러 번 등장할 수 있어서(예: 2차전지 얘기가
-  // 두 번 나옴) 종목 칩은 이름 기준으로 한 번씩만, 탭하면 그 종목이 "처음"
-  // 등장하는 위치로 이동함.
-  const firstStartSecByStock = new Map<string, number>()
+  useEffect(() => {
+    let cancelled = false
+    loadTargetNameMaps().then((maps) => {
+      if (!cancelled) setNameMaps(maps)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  // NOTE: 같은 종목/산업군이 대본 중간에 여러 번 등장할 수 있어서(예: 2차전지
+  // 얘기가 두 번 나옴) 칩은 대상 기준으로 한 번씩만, 탭하면 그 대상이 "처음"
+  // 등장하는 위치로 이동함. USER(사용자 지정) 대상은 이름이 없어 칩에서 제외.
+  const firstStartSecByKey = new Map<
+    string,
+    { target: BriefingTarget; startSec: number }
+  >()
   for (const segment of segments) {
-    if (!firstStartSecByStock.has(segment.stock)) {
-      firstStartSecByStock.set(segment.stock, segment.startSec)
+    if (segment.target.type === 'USER') continue
+    const key = targetKey(segment.target)
+    if (!firstStartSecByKey.has(key)) {
+      firstStartSecByKey.set(key, {
+        target: segment.target,
+        startSec: segment.startSec,
+      })
     }
   }
-  const stocks = [...firstStartSecByStock.keys()]
-  const activeStock = segments[currentSegmentIndex]?.stock
+  const chips = [...firstStartSecByKey.entries()]
+  const activeKey = segments[currentSegmentIndex]
+    ? targetKey(segments[currentSegmentIndex].target)
+    : null
 
   useEffect(() => {
     const container = containerRef.current
@@ -92,24 +125,24 @@ export function TranscriptView({
 
   return (
     <div className='relative z-10 flex min-h-0 flex-1 flex-col'>
-      {stocks.length > 1 && (
+      {chips.length > 1 && (
         <div className='flex shrink-0 gap-1.5 overflow-x-auto px-5 pt-4 pb-2 [&::-webkit-scrollbar]:hidden'>
-          {stocks.map((stock) => (
+          {chips.map(([key, { target, startSec }]) => (
             <button
-              key={stock}
+              key={key}
               type='button'
               onClick={(e) => {
                 e.stopPropagation()
-                onSeek(firstStartSecByStock.get(stock) ?? 0)
+                onSeek(startSec)
               }}
               className={cn(
                 'shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold whitespace-nowrap transition-colors',
-                stock === activeStock
+                key === activeKey
                   ? 'bg-brand text-white'
                   : 'bg-white/10 text-white/60 hover:bg-white/15',
               )}
             >
-              {stock}
+              {resolveTargetName(target, nameMaps)}
             </button>
           ))}
         </div>
@@ -121,19 +154,21 @@ export function TranscriptView({
       >
         {groups.map((group, gi) => (
           <div key={gi} className='space-y-2.5'>
-            <button
-              type='button'
-              onClick={(e) => {
-                e.stopPropagation()
-                onSeek(group.items[0].segment.startSec)
-              }}
-              className='flex w-full items-center gap-2 text-left'
-            >
-              <span className='shrink-0 text-[11px] font-bold text-white/50 hover:text-white/80'>
-                {group.stock}
-              </span>
-              <span className='h-px flex-1 bg-white/10' />
-            </button>
+            {group.target.type !== 'USER' && (
+              <button
+                type='button'
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onSeek(group.items[0].segment.startSec)
+                }}
+                className='flex w-full items-center gap-2 text-left'
+              >
+                <span className='shrink-0 text-[11px] font-bold text-white/50 hover:text-white/80'>
+                  {resolveTargetName(group.target, nameMaps)}
+                </span>
+                <span className='h-px flex-1 bg-white/10' />
+              </button>
+            )}
             <div className='space-y-3'>
               {group.items.map(({ segment, index }) => {
                 const isActive = index === currentSegmentIndex

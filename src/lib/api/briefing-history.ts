@@ -1,19 +1,32 @@
-import { type WordTiming } from './briefings'
+import {
+  type Briefing,
+  type BriefingSegment,
+  type BriefingTarget,
+  type WordTiming,
+} from './briefings'
 import { apiClient } from './client'
 import { toError } from './to-error'
 
-// NOTE: kom-cast-be가 komcast-tts(실시간 합성) 응답을 받아 그대로 릴레이해주는
-// 형태라, 세그먼트 형식이 komcast-tts의 BriefingSegment와 동일함.
+// NOTE: 실제 응답은 STOCK/INDUSTRY/USER 상관없이 stock_code/industry_code가
+// 항상 둘 다 내려오고(안 쓰는 쪽은 null) 구분되는 유니온이 아님. 화면에서 쓰기
+// 편한 판별 유니온(BriefingTarget)은 toBriefing()에서 변환해서 만듦.
+export interface RemoteBriefingTarget {
+  type: 'STOCK' | 'INDUSTRY' | 'USER'
+  stock_code: string | null
+  industry_code: string | null
+}
+
 export interface RemoteBriefingSegment {
+  fraction: number | null
   speaker: '코스' | '코미'
-  stock: string
+  target: RemoteBriefingTarget
   text: string
   startSec: number
   words: WordTiming[]
 }
 
 export interface RemoteBriefing {
-  id: number
+  id: string
   date: string
   headline: string
   audioUrl: string
@@ -22,7 +35,7 @@ export interface RemoteBriefing {
 }
 
 export interface RemoteBriefingListItem {
-  id: number
+  id: string
   date: string
   headline: string
   duration: string
@@ -60,11 +73,40 @@ export async function fetchBriefingHistory(
   }
 }
 
-export async function fetchBriefingById(id: number): Promise<RemoteBriefing> {
+export async function fetchBriefingById(id: string): Promise<RemoteBriefing> {
   try {
     const { data } = await apiClient.get<RemoteBriefing>(`/briefings/${id}`)
     return data
   } catch (err) {
     throw toError(err, '브리핑 상세 조회')
+  }
+}
+
+function toBriefingTarget(remote: RemoteBriefingTarget): BriefingTarget {
+  if (remote.type === 'STOCK' && remote.stock_code) {
+    return { type: 'STOCK', stock_code: remote.stock_code }
+  }
+  if (remote.type === 'INDUSTRY' && remote.industry_code) {
+    return { type: 'INDUSTRY', industry_code: remote.industry_code }
+  }
+  return { type: 'USER' }
+}
+
+function toBriefingSegment(remote: RemoteBriefingSegment): BriefingSegment {
+  return {
+    speaker: remote.speaker,
+    target: toBriefingTarget(remote.target),
+    text: remote.text,
+    fraction: remote.fraction,
+    startSec: remote.startSec,
+    words: remote.words,
+  }
+}
+
+export function toBriefing(remote: RemoteBriefing): Briefing {
+  return {
+    audioUrl: remote.audioUrl,
+    durationSec: remote.durationSeconds,
+    segments: remote.segments.map(toBriefingSegment),
   }
 }
