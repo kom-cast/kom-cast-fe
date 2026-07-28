@@ -34,23 +34,86 @@ export interface Briefing {
   segments: BriefingSegment[]
 }
 
+function targetKey(target: BriefingTarget): string {
+  switch (target.type) {
+    case 'STOCK':
+      return `STOCK:${target.stock_code}`
+    case 'INDUSTRY':
+      return `INDUSTRY:${target.industry_code}`
+    case 'USER':
+      return 'USER'
+  }
+}
+
+type SectionType = 'OPENING' | 'INDUSTRY' | 'BRIDGE' | 'STOCK' | 'CLOSING'
+
+interface ScriptSection {
+  script_type: SectionType
+  target: BriefingTarget
+  lines: { speaker: '코스' | '코미'; text: string }[]
+}
+
+// script_type은 komcast-tts가 현재 요청 바디에서 검증/사용하진 않지만(스펙엔
+// target/lines만 required), kom-cast-be가 TTS를 호출할 때 쓰는 것과 같은 필드명
+// (TtsRequestDto.TtsSection.sectionType → @JsonProperty("script_type"))으로
+// 맞춰서 보냄. 값은 target과 위치 기준으로 채움: 맨 앞/맨 뒤 USER 구간은
+// OPENING/CLOSING, STOCK·INDUSTRY 구간은 그대로, 중간에 낀 USER 구간(진행자
+// 전환 멘트)은 BRIDGE.
+function sectionTypeOf(
+  target: BriefingTarget,
+  index: number,
+  total: number,
+): SectionType {
+  if (target.type === 'STOCK') return 'STOCK'
+  if (target.type === 'INDUSTRY') return 'INDUSTRY'
+  if (index === 0) return 'OPENING'
+  if (index === total - 1) return 'CLOSING'
+  return 'BRIDGE'
+}
+
+// NOTE: komcast-tts의 /briefings는 대상(target)이 line이 아니라 section 단위로
+// 묶인 스펙(Script { script_id, sections: [{ script_type, target, lines }] })을
+// 받음. 여기 DialogueLine[]는 프론트에서 다루기 편한 평평한 형태라 요청 직전에
+// 같은 target이 연속되는 구간끼리 section으로 묶어서 보냄.
+function groupIntoSections(lines: DialogueLine[]): ScriptSection[] {
+  const groups: { target: BriefingTarget; lines: DialogueLine[] }[] = []
+
+  for (const line of lines) {
+    const last = groups[groups.length - 1]
+    if (last && targetKey(last.target) === targetKey(line.target)) {
+      last.lines.push(line)
+    } else {
+      groups.push({ target: line.target, lines: [line] })
+    }
+  }
+
+  return groups.map((group, index) => ({
+    script_type: sectionTypeOf(group.target, index, groups.length),
+    target: group.target,
+    lines: group.lines.map(({ speaker, text }) => ({ speaker, text })),
+  }))
+}
+
 // NOTE: komcast-tts를 프론트에서 직접 호출하는 mock 경로 전용. 실제 서비스에서는
 // kom-cast-be가 이 역할을 대신 해주고 fetchTodayBriefing/fetchBriefingById로
 // 받아오기만 하면 됨 (mock-briefing.ts, player-context.tsx 참고).
 export async function createBriefing(
-  briefingId: string,
+  scriptId: string,
   lines: DialogueLine[],
 ): Promise<Briefing> {
   try {
     const { data } = await ttsApiClient.post(`/briefings`, {
-      briefing_id: briefingId,
-      lines,
+      script_id: scriptId,
+      sections: groupIntoSections(lines),
     })
 
     return {
       audioUrl: `${TTS_API_BASE_URL}${data.audioUrl}`,
       durationSec: data.durationSec,
-      segments: data.segments,
+      segments: (data.segments as BriefingSegment[]).map((segment) => ({
+        ...segment,
+        fraction: segment.fraction ?? null,
+      })),
     }
   } catch (err) {
     if (isAxiosError(err)) {
