@@ -8,7 +8,7 @@ export function BriefingArrivalToast() {
   if (!showArrivalToast) return null
 
   return (
-    <div className='pointer-events-none fixed inset-x-0 top-4 z-50 flex justify-center px-5'>
+    <div className='pointer-events-none fixed inset-x-0 top-4 z-50 mx-auto flex w-full max-w-sm justify-center px-5'>
       <button
         type='button'
         onClick={dismissArrivalToast}
