@@ -7,13 +7,14 @@ import {
 import { apiClient } from './client'
 import { toError } from './to-error'
 
-// NOTE: 실제 응답은 STOCK/INDUSTRY/USER 상관없이 stock_code/industry_code가
-// 항상 둘 다 내려오고(안 쓰는 쪽은 null) 구분되는 유니온이 아님. 화면에서 쓰기
-// 편한 판별 유니온(BriefingTarget)은 toBriefing()에서 변환해서 만듦.
+// NOTE: kom-cast-be의 BriefingTargetDto는 @JsonInclude(NON_NULL)이라 안 쓰는
+// 코드 필드는 null로 채워 보내는 게 아니라 응답에서 아예 빠짐(STOCK이면
+// industry_code 자체가 없음). 그래서 둘 다 optional로 잡음. 화면에서 쓰기 편한
+// 판별 유니온(BriefingTarget)은 toBriefing()에서 변환해서 만듦.
 export interface RemoteBriefingTarget {
   type: 'STOCK' | 'INDUSTRY' | 'USER'
-  stock_code: string | null
-  industry_code: string | null
+  stock_code?: string | null
+  industry_code?: string | null
 }
 
 export interface RemoteBriefingSegment {
