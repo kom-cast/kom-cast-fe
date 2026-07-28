@@ -1,7 +1,6 @@
 import axios from 'axios'
 
-export const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080'
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? ''
 
 // NOTE: 정식 인증 붙기 전까지 X-User-Id 헤더로 사용자를 구분(기본값 1)
 // TODO(backend): 로그인/인증 도입되면 X-User-Id 대신 토큰 기반 인증으로 교체
