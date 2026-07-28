@@ -13,7 +13,7 @@ export function IntroPage() {
   const navigate = useNavigate()
 
   function handleStart() {
-    navigate('/onboarding')
+    navigate('/onboarding/start')
   }
 
   return (

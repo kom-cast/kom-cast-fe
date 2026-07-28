@@ -1,5 +1,7 @@
 export { IntroPage } from './IntroPage'
 export { OnboardingFlow } from './OnboardingFlow'
+export { OnboardingStartPage } from './OnboardingStartPage'
+export { OnboardingMyDataPreviewPage } from './OnboardingMyDataPreviewPage'
 
 export { HomePage } from './HomePage'
 export { PlayerPage } from './PlayerPage'

@@ -15,6 +15,8 @@ import {
   NotificationSettingsPage,
   NotificationsPage,
   OnboardingFlow,
+  OnboardingMyDataPreviewPage,
+  OnboardingStartPage,
   PlayerPage,
   StocksSettingsPage,
   StubSettingsPage,
@@ -27,6 +29,11 @@ function App() {
         <DeviceFrame>
           <Routes>
             <Route path='/' element={<IntroPage />} />
+            <Route path='/onboarding/start' element={<OnboardingStartPage />} />
+            <Route
+              path='/onboarding/mydata'
+              element={<OnboardingMyDataPreviewPage />}
+            />
             <Route path='/onboarding' element={<OnboardingFlow />} />
             <Route path='/home' element={<HomePage />} />
             <Route path='/library' element={<LibraryPage />} />
