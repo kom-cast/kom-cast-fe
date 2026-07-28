@@ -50,7 +50,7 @@ export function NotificationsPage() {
   // NOTE: 응답을 기다리지 않고 목록에 바로 반영(낙관적 업데이트)하고,
   // 실패하면 onError에서 원래 상태로 되돌림.
   const markReadMutation = useMutation({
-    mutationFn: (id: number) => markNotificationRead(id),
+    mutationFn: (id: string) => markNotificationRead(id),
     onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: ['notifications'] })
       const previous = queryClient.getQueryData<RemoteNotification[]>([

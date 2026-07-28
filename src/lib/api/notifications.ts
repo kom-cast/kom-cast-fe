@@ -2,7 +2,7 @@ import { apiClient } from './client'
 import { toError } from './to-error'
 
 export interface RemoteNotification {
-  id: number
+  id: string
   type: string
   title: string
   description: string
@@ -19,7 +19,7 @@ export async function getNotifications(): Promise<RemoteNotification[]> {
   }
 }
 
-export async function markNotificationRead(id: number): Promise<void> {
+export async function markNotificationRead(id: string): Promise<void> {
   try {
     await apiClient.patch(`/notifications/${id}/read`)
   } catch (err) {

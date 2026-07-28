@@ -60,8 +60,15 @@ export function OnboardingFlow() {
         await registerMyStocksBatch(codes, 'PORTFOLIO')
       }
 
-      if (industries.length > 0) {
-        await registerMyIndustriesBatch(industries)
+      const industryCodesByName = new Map(
+        allIndustries.map((i) => [i.name, i.code]),
+      )
+      const industryCodes = industries
+        .map((name) => industryCodesByName.get(name))
+        .filter((code): code is string => Boolean(code))
+
+      if (industryCodes.length > 0) {
+        await registerMyIndustriesBatch(industryCodes)
       }
     },
     onSuccess: () => setCompleted(true),
