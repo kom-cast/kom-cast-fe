@@ -5,7 +5,7 @@ import { ChevronLeft } from 'lucide-react'
 import { useOnboarding } from '@/context/onboarding-context'
 import {
   getAllIndustries,
-  getAllStocks,
+  getAllStocksFull,
   registerMyIndustriesBatch,
   registerMyStocksBatch,
 } from '@/lib/api'
@@ -34,8 +34,8 @@ export function OnboardingFlow() {
     error: stocksError,
     refetch: loadStocks,
   } = useQuery({
-    queryKey: ['stocks'],
-    queryFn: getAllStocks,
+    queryKey: ['stocks', 'full'],
+    queryFn: getAllStocksFull,
   })
 
   const {

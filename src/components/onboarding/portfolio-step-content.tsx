@@ -10,6 +10,7 @@ export function PortfolioStepContent({
   error,
   onRetry,
   showPopular = true,
+  excludeNames,
 }: {
   stocks: RemoteStock[]
   selected: string[]
@@ -18,6 +19,7 @@ export function PortfolioStepContent({
   error: string | null
   onRetry: () => void
   showPopular?: boolean
+  excludeNames?: string[]
 }) {
   if (isLoading) {
     return (
@@ -55,6 +57,7 @@ export function PortfolioStepContent({
       selected={selected}
       onChange={onChange}
       showPopular={showPopular}
+      excludeNames={excludeNames}
     />
   )
 }

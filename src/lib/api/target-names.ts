@@ -1,6 +1,6 @@
 import { type BriefingTarget } from './briefings'
 import { getAllIndustries } from './industries'
-import { getAllStocks } from './stocks'
+import { getAllStocksFull } from './stocks'
 
 export interface TargetNameMaps {
   stocks: Map<string, string>
@@ -12,7 +12,7 @@ export interface TargetNameMaps {
 let cache: Promise<TargetNameMaps> | null = null
 
 export function loadTargetNameMaps(): Promise<TargetNameMaps> {
-  cache ??= Promise.all([getAllStocks(), getAllIndustries()]).then(
+  cache ??= Promise.all([getAllStocksFull(), getAllIndustries()]).then(
     ([stocks, industries]) => ({
       stocks: new Map(stocks.map((s) => [s.code, s.name])),
       industries: new Map(industries.map((i) => [i.code, i.name])),

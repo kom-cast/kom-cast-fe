@@ -5,6 +5,7 @@ import {
   type WordTiming,
 } from './briefings'
 import { apiClient } from './client'
+import { type Page } from './pagination'
 import { toError } from './to-error'
 
 // NOTE: kom-cast-be의 BriefingTargetDto는 @JsonInclude(NON_NULL)이라 안 쓰는
@@ -40,14 +41,6 @@ export interface RemoteBriefingListItem {
   date: string
   headline: string
   duration: string
-}
-
-export interface Page<T> {
-  content: T[]
-  totalElements: number
-  totalPages: number
-  number: number
-  size: number
 }
 
 export async function fetchTodayBriefing(): Promise<RemoteBriefing> {

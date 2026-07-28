@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { ChevronLeft, ChevronRight, Play, Volume2 } from 'lucide-react'
+import { Play, Volume2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 import { fetchBriefingHistory } from '@/lib/api'
 import { formatDate } from '@/lib/format-time'
 import { cn } from '@/lib/utils'
 import { BottomNav } from '@/components/layout'
+import { Pagination } from '@/components/ui/pagination'
 
 const PAGE_SIZE = 10
 
@@ -97,33 +98,12 @@ export function LibraryPage() {
               ))}
             </div>
 
-            {totalPages > 1 && (
-              <div className='flex items-center justify-between'>
-                <button
-                  type='button'
-                  onClick={() => setPage((p) => Math.max(0, p - 1))}
-                  disabled={page === 0}
-                  aria-label='이전 페이지'
-                  className='flex h-9 w-9 items-center justify-center rounded-full bg-muted/50 text-foreground disabled:opacity-40'
-                >
-                  <ChevronLeft className='h-4 w-4' />
-                </button>
-                <span className='font-mono text-xs text-muted-foreground'>
-                  {page + 1} / {totalPages}
-                </span>
-                <button
-                  type='button'
-                  onClick={() =>
-                    setPage((p) => Math.min(totalPages - 1, p + 1))
-                  }
-                  disabled={page + 1 >= totalPages}
-                  aria-label='다음 페이지'
-                  className='flex h-9 w-9 items-center justify-center rounded-full bg-muted/50 text-foreground disabled:opacity-40'
-                >
-                  <ChevronRight className='h-4 w-4' />
-                </button>
-              </div>
-            )}
+            <Pagination
+              page={page}
+              totalPages={totalPages}
+              onPrev={() => setPage((p) => Math.max(0, p - 1))}
+              onNext={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+            />
           </>
         )}
       </div>

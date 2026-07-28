@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import {
   deleteMyStock,
-  getAllStocks,
+  getAllStocksFull,
   getMyStocks,
   registerMyStock,
   type RemoteStock,
@@ -19,8 +19,8 @@ export function StocksSettingsPage() {
     error,
     refetch,
   } = useQuery({
-    queryKey: ['stocks'],
-    queryFn: getAllStocks,
+    queryKey: ['stocks', 'full'],
+    queryFn: getAllStocksFull,
   })
 
   const { data: myStocks = [] } = useQuery({
@@ -122,6 +122,7 @@ export function StocksSettingsPage() {
         error={error instanceof Error ? error.message : null}
         onRetry={() => refetch()}
         showPopular={false}
+        excludeNames={selected}
       />
     </SettingsLayout>
   )
