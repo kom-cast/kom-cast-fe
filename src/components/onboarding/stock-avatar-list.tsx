@@ -5,7 +5,18 @@ import { type Stock } from '@/data/stocks'
 
 import { StockButton } from './stock-button'
 
-const POPULAR_COUNT = 8
+// NOTE: 백엔드 /stocks 응답 순서에 의존하면 정렬이 바뀔 때마다 "인기 종목"이
+// 달라지므로, 인기 종목은 코드로 고정해두고 응답에서 매칭되는 종목만 보여줌.
+const POPULAR_STOCK_CODES = [
+  '005930', // 삼성전자
+  '000660', // SK하이닉스
+  '035420', // NAVER
+  '051910', // LG화학
+  '006400', // 삼성SDI
+  '035720', // 카카오
+  '207940', // 삼성바이오로직스
+  '373220', // LG에너지솔루션
+]
 
 export function StockAvatarList({
   options,
@@ -24,7 +35,10 @@ export function StockAvatarList({
   const [query, setQuery] = useState('')
 
   const normalizedQuery = query.trim().toLowerCase()
-  const popularStocks = options.slice(0, POPULAR_COUNT)
+  const stocksByCode = new Map(options.map((stock) => [stock.code, stock]))
+  const popularStocks = POPULAR_STOCK_CODES.map((code) =>
+    stocksByCode.get(code),
+  ).filter((stock): stock is Stock => stock !== undefined)
   const searchResults = options.filter(
     (stock) =>
       stock.name.toLowerCase().includes(normalizedQuery) ||
