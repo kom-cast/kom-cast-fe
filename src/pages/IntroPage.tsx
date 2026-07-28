@@ -30,7 +30,7 @@ export function IntroPage() {
             </span>
           </div>
 
-          <h1 className='text-[32px] leading-[1.22] font-extrabold tracking-tight text-[#191f28] dark:text-foreground'>
+          <h1 className='text-[32px] leading-[1.22] font-extrabold tracking-tight text-[#191f28]'>
             내 종목만 듣는
             <br />
             <span className='inline-flex items-center gap-1.5 text-brand'>

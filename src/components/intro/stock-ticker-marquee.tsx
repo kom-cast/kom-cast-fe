@@ -17,10 +17,10 @@ export function StockTickerMarquee({
         return (
           <span
             key={stock.name}
-            className='flex shrink-0 items-center gap-2 rounded-xl border border-[#eef1f4] bg-white px-3 py-2 shadow-[0_2px_10px_rgba(15,23,42,0.04)] dark:border-white/10 dark:bg-neutral-800'
+            className='flex shrink-0 items-center gap-2 rounded-xl border border-[#eef1f4] bg-white px-3 py-2 shadow-[0_2px_10px_rgba(15,23,42,0.04)]'
           >
             <span>
-              <span className='block text-[12px] font-bold whitespace-nowrap text-[#191f28] dark:text-foreground'>
+              <span className='block text-[12px] font-bold whitespace-nowrap text-[#191f28]'>
                 {stock.name}
               </span>
               <span className='block font-mono text-[9px] text-[#b0b8c1]'>

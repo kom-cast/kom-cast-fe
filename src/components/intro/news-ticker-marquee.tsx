@@ -18,7 +18,7 @@ export function NewsTickerMarquee({
       {HEADLINES.map((headline) => (
         <span
           key={headline.text}
-          className='flex shrink-0 items-center gap-2 rounded-xl bg-[#f4f6f8] px-3 py-2 text-[11.5px] font-semibold whitespace-nowrap text-[#333d4b] dark:bg-neutral-800 dark:text-muted-foreground'
+          className='flex shrink-0 items-center gap-2 rounded-xl bg-[#f4f6f8] px-3 py-2 text-[11.5px] font-semibold whitespace-nowrap text-[#333d4b]'
         >
           <span
             aria-hidden='true'
