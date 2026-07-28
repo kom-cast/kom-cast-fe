@@ -24,7 +24,7 @@ export function LibraryPage() {
   const totalPages = data?.totalPages ?? 0
 
   return (
-    <div className='min-h-svh bg-background pb-40'>
+    <div className='min-h-svh bg-background pb-40 sm:min-h-full'>
       <div className='mx-auto w-full max-w-sm px-5 py-6'>
         <div className='mb-6'>
           <h1 className='text-xl font-bold text-foreground'>보관함</h1>

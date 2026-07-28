@@ -12,7 +12,7 @@ export function SettingsLayout({
   const navigate = useNavigate()
 
   return (
-    <div className='min-h-svh bg-background'>
+    <div className='min-h-svh bg-background sm:min-h-full'>
       <div className='mx-auto w-full max-w-sm px-5 py-6'>
         <div className='mb-6 flex items-center gap-2'>
           <button

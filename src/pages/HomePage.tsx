@@ -52,7 +52,7 @@ export function HomePage() {
   const recentBriefings = recentBriefingsPage?.content ?? []
 
   return (
-    <div className='min-h-svh bg-background pb-40'>
+    <div className='min-h-svh bg-background pb-40 sm:min-h-full'>
       <BriefingArrivalToast />
       <div className='mx-auto w-full max-w-sm px-5 py-6'>
         <GreetingHeader nickname={nickname} dateLabel={dateLabel} />

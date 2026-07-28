@@ -13,8 +13,8 @@ export function OnboardingComplete() {
   }
 
   return (
-    <div className='flex min-h-svh flex-col bg-white'>
-      <div className='mx-auto flex min-h-svh w-full max-w-sm flex-1 flex-col'>
+    <div className='flex min-h-svh flex-col bg-white sm:min-h-full'>
+      <div className='mx-auto flex min-h-svh w-full max-w-sm flex-1 flex-col sm:min-h-full'>
         <div className='flex flex-1 flex-col items-center justify-center px-8 text-center'>
           <div className='mb-6 flex items-end justify-center gap-3'>
             <MascotBubble

@@ -95,7 +95,7 @@ export function NotificationsPage() {
   })
 
   return (
-    <div className='min-h-svh bg-background'>
+    <div className='min-h-svh bg-background sm:min-h-full'>
       <div className='mx-auto w-full max-w-sm px-5 py-6'>
         <div className='mb-6 flex items-center justify-between gap-2'>
           <div className='flex items-center gap-2'>

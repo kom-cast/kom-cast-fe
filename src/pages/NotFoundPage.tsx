@@ -7,8 +7,8 @@ const RIGHT_BARS = [22, 12, 18, 10]
 
 export function NotFoundPage() {
   return (
-    <div className='min-h-svh bg-background'>
-      <div className='relative mx-auto flex min-h-svh w-full max-w-sm flex-col items-center justify-center overflow-hidden px-5 py-10 text-center'>
+    <div className='min-h-svh bg-background sm:min-h-full'>
+      <div className='relative mx-auto flex min-h-svh w-full max-w-sm flex-col items-center justify-center overflow-hidden px-5 py-10 text-center sm:min-h-full'>
         <div
           aria-hidden
           className='pointer-events-none absolute left-1/2 top-0 h-105 w-105 -translate-x-1/2 -translate-y-1/3 rounded-full bg-brand/15 blur-3xl'

@@ -43,8 +43,8 @@ export function PlayerPage() {
   }
 
   return (
-    <div className='h-svh bg-[#0b0d16]'>
-      <div className='mx-auto flex h-svh w-full max-w-sm flex-col px-5 py-6 text-white'>
+    <div className='h-svh bg-[#0b0d16] sm:h-full'>
+      <div className='mx-auto flex h-svh w-full max-w-sm flex-col px-5 py-6 text-white sm:h-full'>
         <PlayerHeader
           dateLabel={dateLabel}
           isPlaying={isPlaying}

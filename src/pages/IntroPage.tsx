@@ -17,7 +17,7 @@ export function IntroPage() {
   }
 
   return (
-    <div className='flex min-h-svh items-center justify-center overflow-x-hidden bg-background'>
+    <div className='flex min-h-svh items-center justify-center overflow-x-hidden bg-background sm:min-h-full'>
       <div className='flex min-h-[min(100svh,800px)] w-full max-w-sm flex-col py-10'>
         <div className='space-y-3 px-4 sm:px-6'>
           <div className='flex items-center gap-1.5'>
