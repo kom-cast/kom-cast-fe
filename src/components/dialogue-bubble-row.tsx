@@ -2,10 +2,10 @@ import { type BriefingSegment } from '@/lib/api'
 import { cn } from '@/lib/utils'
 import { KomiMascot, KosMascot } from '@/components/icons'
 
-// NOTE: TTS 타임스탬프가 실제 오디오와 어긋나는 문제(komcast-tts 쪽 라인
-// 이어붙이기 offset 누적)가 있어서, 원인이 고쳐질 때까지 단어 단위 하이라이트
-// 색상만 임시로 끔. 단어 탭 seek는 그대로 유지.
-const WORD_HIGHLIGHT_ENABLED = false
+// NOTE: TTS 타임스탬프가 실제 오디오와 어긋나던 문제(komcast-tts 쪽 라인
+// 이어붙이기 offset 누적)는 mixer.py에서 수정됨. 필요하면 다시 끌 수 있게
+// 스위치는 남겨둠.
+const WORD_HIGHLIGHT_ENABLED = true
 
 // NOTE: active면 단어 단위로 재생헤드 강조 + 탭 seek 지원
 const LINE_CLAMP_CLASS = {
