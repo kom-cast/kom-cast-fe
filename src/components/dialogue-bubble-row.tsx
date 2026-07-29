@@ -7,6 +7,10 @@ import { KomiMascot, KosMascot } from '@/components/icons'
 // 스위치는 남겨둠.
 const WORD_HIGHLIGHT_ENABLED = true
 
+// NOTE: 하이라이트가 실제 오디오보다 빠르게 느껴져서 추가한 지연 보정치.
+// 필요하면 이 값만 조정.
+const HIGHLIGHT_OFFSET_SEC = 0.15
+
 // NOTE: active면 단어 단위로 재생헤드 강조 + 탭 seek 지원
 const LINE_CLAMP_CLASS = {
   1: 'line-clamp-1',
@@ -38,7 +42,8 @@ export function DialogueBubbleRow({
   const activeWordIndex =
     active && WORD_HIGHLIGHT_ENABLED
       ? segment.words.reduce(
-          (acc, word, i) => (elapsed >= word.startSec ? i : acc),
+          (acc, word, i) =>
+            elapsed >= word.startSec + HIGHLIGHT_OFFSET_SEC ? i : acc,
           -1,
         )
       : -1
