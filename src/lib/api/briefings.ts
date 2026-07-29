@@ -34,6 +34,57 @@ export interface Briefing {
   segments: BriefingSegment[]
 }
 
+// komcast-tts mixer.py의 GAP_BETWEEN_LINES_MS(400ms)와 반드시 맞춰야 함 -
+// 라인 사이 무음 간격이 바뀌면 여기서 계산하는 세그먼트 실제 끝 지점도 같이
+// 어긋남.
+const SEGMENT_GAP_SEC = 0.4
+
+// NOTE: TTS가 내려주는 단어별 타이밍은 문장이 길어질수록 중간 단어의 상대
+// 위치 오차가 커짐(세그먼트 시작/끝은 대체로 정확). 그래서 세그먼트 시작
+// (startSec)과 실제 끝(다음 세그먼트 시작에서 gap을 뺀 값 - 마지막 세그먼트는
+// 전체 길이) 두 앵커를 신뢰 가능한 기준으로 삼아, 중간 단어들의
+// startSec/endSec을 그 구간 안으로 선형 재매핑한다. 단어 간 상대적인 리듬
+// (쉼, 강세 등 TTS가 잡아준 정보)은 유지하면서 누적된 선형 오차만 펴는 방식.
+export function normalizeSegmentTimings(
+  segments: BriefingSegment[],
+  durationSec: number,
+): BriefingSegment[] {
+  return segments.map((segment, i) => {
+    if (segment.words.length === 0) return segment
+
+    const realStart = segment.startSec
+    const realEnd =
+      i < segments.length - 1
+        ? segments[i + 1].startSec - SEGMENT_GAP_SEC
+        : durationSec
+
+    if (realEnd <= realStart) return segment
+
+    if (segment.words.length === 1) {
+      const [word] = segment.words
+      return {
+        ...segment,
+        words: [{ ...word, startSec: realStart, endSec: realEnd }],
+      }
+    }
+
+    const firstStart = segment.words[0].startSec
+    const lastEnd = segment.words[segment.words.length - 1].endSec
+    const originalSpan = lastEnd - firstStart
+    if (originalSpan <= 0) return segment
+
+    const scale = (realEnd - realStart) / originalSpan
+    return {
+      ...segment,
+      words: segment.words.map((word) => ({
+        ...word,
+        startSec: realStart + (word.startSec - firstStart) * scale,
+        endSec: realStart + (word.endSec - firstStart) * scale,
+      })),
+    }
+  })
+}
+
 function targetKey(target: BriefingTarget): string {
   switch (target.type) {
     case 'STOCK':
@@ -107,13 +158,15 @@ export async function createBriefing(
       sections: groupIntoSections(lines),
     })
 
+    const segments = (data.segments as BriefingSegment[]).map((segment) => ({
+      ...segment,
+      fraction: segment.fraction ?? null,
+    }))
+
     return {
       audioUrl: `${TTS_API_BASE_URL}${data.audioUrl}`,
       durationSec: data.durationSec,
-      segments: (data.segments as BriefingSegment[]).map((segment) => ({
-        ...segment,
-        fraction: segment.fraction ?? null,
-      })),
+      segments: normalizeSegmentTimings(segments, data.durationSec),
     }
   } catch (err) {
     if (isAxiosError(err)) {

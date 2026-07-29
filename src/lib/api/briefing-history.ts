@@ -1,4 +1,5 @@
 import {
+  normalizeSegmentTimings,
   type Briefing,
   type BriefingSegment,
   type BriefingTarget,
@@ -98,9 +99,10 @@ function toBriefingSegment(remote: RemoteBriefingSegment): BriefingSegment {
 }
 
 export function toBriefing(remote: RemoteBriefing): Briefing {
+  const segments = remote.segments.map(toBriefingSegment)
   return {
     audioUrl: remote.audioUrl,
     durationSec: remote.durationSeconds,
-    segments: remote.segments.map(toBriefingSegment),
+    segments: normalizeSegmentTimings(segments, remote.durationSeconds),
   }
 }
