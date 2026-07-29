@@ -82,7 +82,7 @@ export function TodayBriefingCard() {
   }
 
   return (
-    <div className='relative mb-8 flex h-95 flex-col overflow-hidden rounded-3xl bg-[#191f28] p-6 text-white'>
+    <div className='relative mb-8 flex h-105 flex-col overflow-hidden rounded-3xl bg-[#191f28] p-6 text-white'>
       <div
         aria-hidden
         className='pointer-events-none absolute -top-10 -right-10 h-40 w-40 rounded-full bg-brand/25 blur-3xl'
