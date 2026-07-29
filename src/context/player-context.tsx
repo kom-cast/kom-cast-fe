@@ -44,7 +44,7 @@ const BRIEFING_READY_HOUR = 6
 // elapsed가 목표 seg.startSec보다 아주 조금 작게 나올 수 있음. 그대로 등호 없는
 // 비교를 하면 방금 seek한 세그먼트가 아니라 그 이전 세그먼트가 "현재"로 계산돼서
 // 뱃지/구간 라벨을 눌러도 다른 구간이 활성화되는 것처럼 보임. 여유를 조금 둠.
-const SEGMENT_SEEK_EPSILON_SEC = 0.15
+const SEGMENT_SEEK_EPSILON_SEC = 0.03
 
 const DEFAULT_MOCK_STOCK_0: Stock = MOCK_STOCKS[0]
 const DEFAULT_MOCK_STOCK_1: Stock = MOCK_STOCKS[1]

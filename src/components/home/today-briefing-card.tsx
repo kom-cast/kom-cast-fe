@@ -82,7 +82,7 @@ export function TodayBriefingCard() {
   }
 
   return (
-    <div className='relative mb-8 flex h-80 flex-col overflow-hidden rounded-3xl bg-[#191f28] p-6 text-white'>
+    <div className='relative mb-8 flex h-95 flex-col overflow-hidden rounded-3xl bg-[#191f28] p-6 text-white'>
       <div
         aria-hidden
         className='pointer-events-none absolute -top-10 -right-10 h-40 w-40 rounded-full bg-brand/25 blur-3xl'
@@ -105,7 +105,7 @@ export function TodayBriefingCard() {
       </div>
 
       <div className='relative flex min-h-0 flex-1 flex-col gap-4'>
-        <div className='flex min-h-0 flex-1 flex-col justify-center'>
+        <div className='flex min-h-0 flex-1 flex-col justify-center overflow-hidden'>
           {!briefing ? (
             <div className='space-y-2' aria-label='브리핑 준비 중'>
               <div className='flex items-start gap-2'>
@@ -127,6 +127,7 @@ export function TodayBriefingCard() {
                     elapsed={elapsed}
                     onSeekWord={seek}
                     size='sm'
+                    lineClamp={1}
                   />
                 )}
                 <div

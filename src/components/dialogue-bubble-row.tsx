@@ -2,19 +2,33 @@ import { type BriefingSegment } from '@/lib/api'
 import { cn } from '@/lib/utils'
 import { KomiMascot, KosMascot } from '@/components/icons'
 
+// NOTE: 백엔드(TTS)가 내려주는 단어별 startSec이 실제 합성 오디오 발화 속도보다
+// 살짝 빠르게 잡혀 있어서, 재생 중반부로 갈수록 하이라이트가 오디오보다
+// 조금씩 앞서가는 것처럼 보임. 근본 원인(타임스탬프 생성 쪽)을 고칠 수 없는
+// 상황이라, elapsed를 그 비율만큼 늦춰서 체감상 맞춰주는 보정값.
+const WORD_HIGHLIGHT_CATCHUP_FACTOR = 0.98
+
 // NOTE: active면 단어 단위로 재생헤드 강조 + 탭 seek 지원
+const LINE_CLAMP_CLASS = {
+  1: 'line-clamp-1',
+  2: 'line-clamp-2',
+  3: 'line-clamp-3',
+} as const
+
 export function DialogueBubbleRow({
   segment,
   active,
   elapsed,
   onSeekWord,
   size = 'lg',
+  lineClamp,
 }: {
   segment: BriefingSegment
   active: boolean
   elapsed: number
   onSeekWord: (seconds: number) => void
   size?: 'sm' | 'lg'
+  lineClamp?: 1 | 2 | 3
 }) {
   const isKos = segment.speaker === '코스'
 
@@ -22,9 +36,10 @@ export function DialogueBubbleRow({
   // timeupdate 틱 사이로 그 단어의 구간 전체를 건너뛰어 하이라이트가 안 되는
   // 경우가 생김. 그래서 "지금까지 시작한 마지막 단어"를 활성 단어로 잡아서,
   // 한번 시작한 단어는 다음 단어가 시작하기 전까지 계속 하이라이트되게 함.
+  const adjustedElapsed = elapsed * WORD_HIGHLIGHT_CATCHUP_FACTOR
   const activeWordIndex = active
     ? segment.words.reduce(
-        (acc, word, i) => (elapsed >= word.startSec ? i : acc),
+        (acc, word, i) => (adjustedElapsed >= word.startSec ? i : acc),
         -1,
       )
     : -1
@@ -55,6 +70,7 @@ export function DialogueBubbleRow({
           isKos ? 'rounded-tl-lg' : 'rounded-tr-lg',
           size === 'lg' ? 'text-base leading-snug' : 'text-sm leading-snug',
           isKos ? 'bg-brand/20 text-white' : 'bg-[#3e9bff]/18 text-white',
+          lineClamp && LINE_CLAMP_CLASS[lineClamp],
         )}
       >
         {segment.words.length > 0 ? (
