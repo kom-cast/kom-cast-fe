@@ -59,10 +59,20 @@ function warpMiddleSlower(fraction: number): number {
   )
 }
 
+// NOTE: 세그먼트 첫/끝 단어를 realStart/realEnd에 강제로 맞추고 그 사이를
+// 늘리는 방식이라, mixer.py가 이미 정확하게 내려주는 라인 앞뒤의 자연스러운
+// 미세 여백까지 없애버리고 그만큼 전체를 늘려버림 - 세그먼트가 길수록 늘어난
+// 시간이 누적돼 하이라이트가 점점 더 느려지는 새로운 드리프트를 만드는 것으로
+// 보임(mixer.py 리딩 무음 수정 후로는 원본 타이밍이 이미 충분히 정확할 수
+// 있음). 원인 확인될 때까지 꺼둠.
+const SEGMENT_TIMING_RESCALE_ENABLED = false
+
 export function normalizeSegmentTimings(
   segments: BriefingSegment[],
   durationSec: number,
 ): BriefingSegment[] {
+  if (!SEGMENT_TIMING_RESCALE_ENABLED) return segments
+
   return segments.map((segment, i) => {
     if (segment.words.length === 0) return segment
 
