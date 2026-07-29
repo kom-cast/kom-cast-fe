@@ -13,7 +13,7 @@ interface OnboardingState {
 }
 
 const DEFAULT_STATE: OnboardingState = {
-  nickname: '서영',
+  nickname: '윤주',
   portfolio: [],
   industries: [],
 }
