@@ -13,7 +13,7 @@ const WORD_HIGHLIGHT_ENABLED = true
 // 균일하게 어긋나는 것으로 확인됨(길어질수록 더 벌어지는 드리프트가
 // 아님) - 그래서 세그먼트 내 위치를 늘리는 재보정(normalizeSegmentTimings)
 // 대신 이 고정 오프셋 하나로 처리. 체감 어긋남이 바뀌면 이 값만 조정.
-const HIGHLIGHT_OFFSET_SEC = 0.4
+const HIGHLIGHT_OFFSET_SEC = 2
 
 // NOTE: active면 단어 단위로 재생헤드 강조 + 탭 seek 지원
 const LINE_CLAMP_CLASS = {
