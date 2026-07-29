@@ -32,7 +32,11 @@ function loadState(): OnboardingState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return DEFAULT_STATE
-    return { ...DEFAULT_STATE, ...JSON.parse(raw) }
+    return {
+      ...DEFAULT_STATE,
+      ...JSON.parse(raw),
+      nickname: DEFAULT_STATE.nickname,
+    }
   } catch {
     return DEFAULT_STATE
   }
