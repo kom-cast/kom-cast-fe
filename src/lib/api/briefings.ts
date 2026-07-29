@@ -39,12 +39,20 @@ export interface Briefing {
 // 어긋남.
 const SEGMENT_GAP_SEC = 0.4
 
-// NOTE: TTS가 내려주는 단어별 타이밍은 문장이 길어질수록 중간 단어의 상대
-// 위치 오차가 커짐(세그먼트 시작/끝은 대체로 정확). 그래서 세그먼트 시작
-// (startSec)과 실제 끝(다음 세그먼트 시작에서 gap을 뺀 값 - 마지막 세그먼트는
-// 전체 길이) 두 앵커를 신뢰 가능한 기준으로 삼아, 중간 단어들의
-// startSec/endSec을 그 구간 안으로 선형 재매핑한다. 단어 간 상대적인 리듬
-// (쉼, 강세 등 TTS가 잡아준 정보)은 유지하면서 누적된 선형 오차만 펴는 방식.
+// NOTE: TTS가 내려주는 단어별 타이밍은 문장이 길어질수록 중간 구간이 실제
+// 오디오보다 빠르게 흘러가는 경향이 있음(세그먼트 시작/끝은 대체로 정확).
+// 그래서 세그먼트 시작(startSec)과 실제 끝(다음 세그먼트 시작에서 gap을 뺀
+// 값 - 마지막 세그먼트는 전체 길이) 두 앵커는 그대로 두고, 그 사이 위치를
+// 사인 곡선으로 한번 더 휘어서 중간은 원래보다 느리게, 양 끝 근처는 그만큼
+// 빠르게 흐르도록 배분한다(적분하면 항상 realStart~realEnd로 돌아옴). 값이
+// 클수록 중간이 더 느려짐 - 1/(2π)(≈0.159) 미만이어야 단조증가가 보장됨.
+const MIDDLE_SLOWDOWN_STRENGTH = 0.12
+
+function warpMiddleSlower(fraction: number): number {
+  const u = Math.min(1, Math.max(0, fraction))
+  return u + MIDDLE_SLOWDOWN_STRENGTH * Math.sin(2 * Math.PI * u)
+}
+
 export function normalizeSegmentTimings(
   segments: BriefingSegment[],
   durationSec: number,
@@ -73,13 +81,16 @@ export function normalizeSegmentTimings(
     const originalSpan = lastEnd - firstStart
     if (originalSpan <= 0) return segment
 
-    const scale = (realEnd - realStart) / originalSpan
+    const remap = (t: number) =>
+      realStart +
+      warpMiddleSlower((t - firstStart) / originalSpan) * (realEnd - realStart)
+
     return {
       ...segment,
       words: segment.words.map((word) => ({
         ...word,
-        startSec: realStart + (word.startSec - firstStart) * scale,
-        endSec: realStart + (word.endSec - firstStart) * scale,
+        startSec: remap(word.startSec),
+        endSec: remap(word.endSec),
       })),
     }
   })
