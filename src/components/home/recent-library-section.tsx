@@ -16,7 +16,7 @@ export function RecentLibrarySection({
   onRetry: () => void
 }) {
   return (
-    <>
+    <div className='mb-8'>
       <div className='mb-3 flex items-center justify-between'>
         <p className='text-base font-semibold text-foreground'>최근 보관함</p>
         <Link to='/library' className='text-sm text-muted-foreground'>
@@ -78,6 +78,6 @@ export function RecentLibrarySection({
           ))}
         </div>
       )}
-    </>
+    </div>
   )
 }

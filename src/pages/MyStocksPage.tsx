@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import { getMyIndustries, getMyStocks } from '@/lib/api'
 import { BottomNav } from '@/components/layout'
 import { PortfolioStockList } from '@/components/stocks'
+import { InfoTooltip } from '@/components/ui/info-tooltip'
 
 export function MyStocksPage() {
   const {
@@ -44,7 +45,14 @@ export function MyStocksPage() {
         )}
 
         <div className='mb-3 flex items-center justify-between'>
-          <p className='text-base font-semibold text-foreground'>보유 종목</p>
+          <div className='flex items-center gap-1'>
+            <p className='text-base font-semibold text-foreground'>보유 종목</p>
+            <InfoTooltip
+              text={
+                '전날 종가 기준이에요.\nCHECK API를 활용해서 받아온 데이터에요.'
+              }
+            />
+          </div>
           <span className='text-sm text-muted-foreground'>
             {portfolioStocks.length}개
           </span>

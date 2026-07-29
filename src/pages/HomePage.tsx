@@ -59,13 +59,6 @@ export function HomePage() {
 
         <TodayBriefingCard />
 
-        <MyStocksSection
-          stocks={myStocks}
-          isLoading={myStocksLoading}
-          error={myStocksError instanceof Error ? myStocksError.message : null}
-          onRetry={() => refetchMyStocks()}
-        />
-
         <RecentLibrarySection
           items={recentBriefings}
           isLoading={recentBriefingsLoading}
@@ -75,6 +68,13 @@ export function HomePage() {
               : null
           }
           onRetry={() => refetchRecentBriefings()}
+        />
+
+        <MyStocksSection
+          stocks={myStocks}
+          isLoading={myStocksLoading}
+          error={myStocksError instanceof Error ? myStocksError.message : null}
+          onRetry={() => refetchMyStocks()}
         />
       </div>
 
