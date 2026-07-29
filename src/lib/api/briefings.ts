@@ -49,7 +49,7 @@ const SEGMENT_GAP_SEC = 0.4
 // 두고, 갈수록 벌어지는 뒷부분 위주로 지연을 더 준다. 어디서도 sin 값이
 // 음수가 되지 않아 원래보다 빨라지는 구간은 생기지 않고, u=1에서 정확히
 // 앵커로 돌아온다.
-const MIDDLE_SLOWDOWN_STRENGTH = 0.03
+const MIDDLE_SLOWDOWN_STRENGTH = 0
 const MIDDLE_SLOWDOWN_SKEW = 2
 
 function warpMiddleSlower(fraction: number): number {
