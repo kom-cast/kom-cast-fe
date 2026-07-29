@@ -7,13 +7,12 @@ import { KomiMascot, KosMascot } from '@/components/icons'
 // 스위치는 남겨둠.
 const WORD_HIGHLIGHT_ENABLED = true
 
-// NOTE: TTS(Typecast) 라인 오디오 앞에 실제 무음이 0.3~0.5초 정도 붙어서
-// 나오는데, tts-service(mixer.py)는 우리가 배포/수정할 수 없는 영역이라
-// 프론트에서 고정 지연으로 흡수함. 문장 길이와 무관하게 매 라인마다
-// 균일하게 어긋나는 것으로 확인됨(길어질수록 더 벌어지는 드리프트가
-// 아님) - 그래서 세그먼트 내 위치를 늘리는 재보정(normalizeSegmentTimings)
-// 대신 이 고정 오프셋 하나로 처리. 체감 어긋남이 바뀌면 이 값만 조정.
-const HIGHLIGHT_OFFSET_SEC = 2
+// NOTE: 예전엔 mixer.py의 라인 앞부분 프라이밍 무음 문제를 프론트에서
+// 임시로 가리려고 고정 지연을 뒀었는데, 그 문제 자체가 mixer.py에서
+// 고쳐졌고(리딩 무음 제거) 세그먼트별 타이밍도 normalizeSegmentTimings에서
+// 보정하고 있어서 지금은 이 고정값이 오히려 앞부분을 불필요하게 더
+// 느리게 만듦. 필요해지면 이 값만 조정.
+const HIGHLIGHT_OFFSET_SEC = 0
 
 // NOTE: active면 단어 단위로 재생헤드 강조 + 탭 seek 지원
 const LINE_CLAMP_CLASS = {
