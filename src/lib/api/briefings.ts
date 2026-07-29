@@ -29,6 +29,7 @@ export interface BriefingSegment {
 }
 
 export interface Briefing {
+  headline: string
   audioUrl: string
   durationSec: number
   segments: BriefingSegment[]
@@ -171,6 +172,7 @@ function groupIntoSections(lines: DialogueLine[]): ScriptSection[] {
 // 받아오기만 하면 됨 (mock-briefing.ts, player-context.tsx 참고).
 export async function createBriefing(
   scriptId: string,
+  headline: string,
   lines: DialogueLine[],
 ): Promise<Briefing> {
   try {
@@ -185,6 +187,7 @@ export async function createBriefing(
     }))
 
     return {
+      headline,
       audioUrl: `${TTS_API_BASE_URL}${data.audioUrl}`,
       durationSec: data.durationSec,
       segments: normalizeSegmentTimings(segments, data.durationSec),

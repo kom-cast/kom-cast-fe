@@ -79,5 +79,9 @@ export function createMockBriefing(
   stock1: Stock,
   stock2: Stock | undefined,
 ): Promise<Briefing> {
-  return createBriefing(id, buildMockDialogueLines(stock0, stock1, stock2))
+  return createBriefing(
+    id,
+    '오늘의 증시 브리핑',
+    buildMockDialogueLines(stock0, stock1, stock2),
+  )
 }

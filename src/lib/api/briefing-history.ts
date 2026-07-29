@@ -101,6 +101,7 @@ function toBriefingSegment(remote: RemoteBriefingSegment): BriefingSegment {
 export function toBriefing(remote: RemoteBriefing): Briefing {
   const segments = remote.segments.map(toBriefingSegment)
   return {
+    headline: remote.headline,
     audioUrl: remote.audioUrl,
     durationSec: remote.durationSeconds,
     segments: normalizeSegmentTimings(segments, remote.durationSeconds),

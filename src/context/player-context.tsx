@@ -242,7 +242,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  const headline = '오늘의 증시 브리핑'
+  const headline = briefing?.headline ?? '오늘의 증시 브리핑'
 
   const durationSeconds = briefing?.durationSec ?? 0
   const progress = durationSeconds > 0 ? elapsed / durationSeconds : 0
