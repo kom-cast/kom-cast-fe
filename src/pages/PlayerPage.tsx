@@ -52,6 +52,12 @@ export function PlayerPage() {
           onToggleScript={toggleScript}
         />
 
+        {briefing && !isTodayNotYetReady && (
+          <p className='mb-3 text-center text-xs text-white/40'>
+            전 영업일 기준으로 만들어진 브리핑이에요
+          </p>
+        )}
+
         <div className='flex min-h-0 flex-1 flex-col justify-center gap-6'>
           <PlayerHero
             briefing={briefing}
