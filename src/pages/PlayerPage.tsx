@@ -27,7 +27,7 @@ export function PlayerPage() {
     seek,
     setSpeed,
   } = usePlayer()
-  const [showScript, setShowScript] = useState(true)
+  const [showScript, setShowScript] = useState(false)
 
   const isHistorical = briefingId !== TODAY_BRIEFING_ID
   const notFound = isHistorical && loadError !== null
