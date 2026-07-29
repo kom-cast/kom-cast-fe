@@ -2,11 +2,10 @@ import { type BriefingSegment } from '@/lib/api'
 import { cn } from '@/lib/utils'
 import { KomiMascot, KosMascot } from '@/components/icons'
 
-// NOTE: 백엔드(TTS)가 내려주는 단어별 startSec이 실제 합성 오디오 발화 속도보다
-// 살짝 빠르게 잡혀 있어서, 재생 중반부로 갈수록 하이라이트가 오디오보다
-// 조금씩 앞서가는 것처럼 보임. 근본 원인(타임스탬프 생성 쪽)을 고칠 수 없는
-// 상황이라, elapsed를 그 비율만큼 늦춰서 체감상 맞춰주는 보정값.
-const WORD_HIGHLIGHT_CATCHUP_FACTOR = 0.98
+// NOTE: TTS 타임스탬프가 실제 오디오와 어긋나는 문제(komcast-tts 쪽 라인
+// 이어붙이기 offset 누적)가 있어서, 원인이 고쳐질 때까지 단어 단위 하이라이트
+// 색상만 임시로 끔. 단어 탭 seek는 그대로 유지.
+const WORD_HIGHLIGHT_ENABLED = false
 
 // NOTE: active면 단어 단위로 재생헤드 강조 + 탭 seek 지원
 const LINE_CLAMP_CLASS = {
@@ -36,13 +35,13 @@ export function DialogueBubbleRow({
   // timeupdate 틱 사이로 그 단어의 구간 전체를 건너뛰어 하이라이트가 안 되는
   // 경우가 생김. 그래서 "지금까지 시작한 마지막 단어"를 활성 단어로 잡아서,
   // 한번 시작한 단어는 다음 단어가 시작하기 전까지 계속 하이라이트되게 함.
-  const adjustedElapsed = elapsed * WORD_HIGHLIGHT_CATCHUP_FACTOR
-  const activeWordIndex = active
-    ? segment.words.reduce(
-        (acc, word, i) => (adjustedElapsed >= word.startSec ? i : acc),
-        -1,
-      )
-    : -1
+  const activeWordIndex =
+    active && WORD_HIGHLIGHT_ENABLED
+      ? segment.words.reduce(
+          (acc, word, i) => (elapsed >= word.startSec ? i : acc),
+          -1,
+        )
+      : -1
 
   return (
     <div
