@@ -43,14 +43,16 @@ const SEGMENT_GAP_SEC = 0.4
 // 오디오보다 빠르게 흘러가는 경향이 있음(세그먼트 시작/끝은 대체로 정확).
 // 그래서 세그먼트 시작(startSec)과 실제 끝(다음 세그먼트 시작에서 gap을 뺀
 // 값 - 마지막 세그먼트는 전체 길이) 두 앵커는 그대로 두고, 그 사이 위치를
-// 사인 곡선으로 한번 더 휘어서 중간은 원래보다 느리게, 양 끝 근처는 그만큼
-// 빠르게 흐르도록 배분한다(적분하면 항상 realStart~realEnd로 돌아옴). 값이
-// 클수록 중간이 더 느려짐 - 1/(2π)(≈0.159) 미만이어야 단조증가가 보장됨.
-const MIDDLE_SLOWDOWN_STRENGTH = 0.12
+// sin(πu) 혹(hump)으로 밀어서 중간만 원래보다 느리게 만든다. sin(πu)는 양
+// 끝(u=0, u=1)에서 0이고 구간 내내 0 이상이라 - sin(2πu)처럼 앞은 밀리고
+// 뒤는 당겨지는 비대칭 왜곡을 만들지 않음 - 어디도 원래보다 빨라지지 않고
+// 중간만 느려진 뒤 끝에서 정확히 앵커로 되돌아온다. 값이 클수록 중간이 더
+// 느려짐 - 1/π(≈0.318) 미만이어야 단조증가가 보장됨.
+const MIDDLE_SLOWDOWN_STRENGTH = 0.06
 
 function warpMiddleSlower(fraction: number): number {
   const u = Math.min(1, Math.max(0, fraction))
-  return u + MIDDLE_SLOWDOWN_STRENGTH * Math.sin(2 * Math.PI * u)
+  return u + MIDDLE_SLOWDOWN_STRENGTH * Math.sin(Math.PI * u)
 }
 
 export function normalizeSegmentTimings(
