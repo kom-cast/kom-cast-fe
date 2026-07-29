@@ -39,20 +39,24 @@ export interface Briefing {
 // 어긋남.
 const SEGMENT_GAP_SEC = 0.4
 
-// NOTE: TTS가 내려주는 단어별 타이밍은 문장이 길어질수록 중간 구간이 실제
-// 오디오보다 빠르게 흘러가는 경향이 있음(세그먼트 시작/끝은 대체로 정확).
-// 그래서 세그먼트 시작(startSec)과 실제 끝(다음 세그먼트 시작에서 gap을 뺀
-// 값 - 마지막 세그먼트는 전체 길이) 두 앵커는 그대로 두고, 그 사이 위치를
-// sin(πu) 혹(hump)으로 밀어서 중간만 원래보다 느리게 만든다. sin(πu)는 양
-// 끝(u=0, u=1)에서 0이고 구간 내내 0 이상이라 - sin(2πu)처럼 앞은 밀리고
-// 뒤는 당겨지는 비대칭 왜곡을 만들지 않음 - 어디도 원래보다 빨라지지 않고
-// 중간만 느려진 뒤 끝에서 정확히 앵커로 되돌아온다. 값이 클수록 중간이 더
-// 느려짐 - 1/π(≈0.318) 미만이어야 단조증가가 보장됨.
+// NOTE: TTS가 내려주는 단어별 타이밍은 세그먼트가 길어질수록 뒤로 갈수록
+// 오차가 누적돼 실제 오디오보다 빠르게 흘러가는 경향이 있음(시작 지점은
+// 대체로 정확, 끝은 앵커로 강제로 맞춰짐). 그래서 세그먼트 시작(startSec)과
+// 실제 끝(다음 세그먼트 시작에서 gap을 뺀 값 - 마지막 세그먼트는 전체 길이)
+// 두 앵커는 그대로 두고, 그 사이 위치를 sin(π·u^SKEW) 혹(hump)으로 밀어서
+// 느리게 만든다. SKEW>1이면 u^SKEW가 작은 u에서 더 작아져서(u=0 근처는 거의
+// 안 밀림) 혹의 정점이 뒤쪽으로 쏠림 - 원래 안 어긋나던 앞부분은 그대로
+// 두고, 갈수록 벌어지는 뒷부분 위주로 지연을 더 준다. 어디서도 sin 값이
+// 음수가 되지 않아 원래보다 빨라지는 구간은 생기지 않고, u=1에서 정확히
+// 앵커로 돌아온다.
 const MIDDLE_SLOWDOWN_STRENGTH = 0.06
+const MIDDLE_SLOWDOWN_SKEW = 2
 
 function warpMiddleSlower(fraction: number): number {
   const u = Math.min(1, Math.max(0, fraction))
-  return u + MIDDLE_SLOWDOWN_STRENGTH * Math.sin(Math.PI * u)
+  return (
+    u + MIDDLE_SLOWDOWN_STRENGTH * Math.sin(Math.PI * u ** MIDDLE_SLOWDOWN_SKEW)
+  )
 }
 
 export function normalizeSegmentTimings(
