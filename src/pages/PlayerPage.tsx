@@ -17,7 +17,6 @@ export function PlayerPage() {
     isPlaying,
     speed,
     headline,
-    subtitle,
     durationSeconds,
     progress,
     currentSegmentIndex,
@@ -69,12 +68,9 @@ export function PlayerPage() {
           />
 
           {briefing && !isTodayNotYetReady && (
-            <div className='space-y-0.5'>
-              <p className='text-base leading-snug font-bold break-keep'>
-                {headline}
-              </p>
-              <p className='text-xs text-white/50'>{subtitle}</p>
-            </div>
+            <p className='text-base leading-snug font-bold break-keep'>
+              {headline}
+            </p>
           )}
         </div>
 

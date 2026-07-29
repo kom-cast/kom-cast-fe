@@ -12,7 +12,6 @@ export function TodayBriefingCard() {
     briefing,
     loadError,
     headline,
-    subtitle,
     isPlaying,
     elapsed,
     durationSeconds,
@@ -101,7 +100,6 @@ export function TodayBriefingCard() {
         <p className='mt-0.5 text-lg leading-snug font-bold break-keep'>
           {headline}
         </p>
-        <p className='mt-1 text-xs text-white/50'>{subtitle}</p>
       </div>
 
       <div className='relative flex min-h-0 flex-1 flex-col gap-4'>

@@ -62,7 +62,6 @@ interface PlayerContextValue {
   isPlaying: boolean
   speed: number
   headline: string
-  subtitle: string
   durationSeconds: number
   progress: number
   segments: BriefingSegment[]
@@ -99,8 +98,6 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
 
   const [activeId, setActiveId] = useState<string | null>(null)
   const [dateLabel, setDateLabel] = useState('')
-  const [customHeadline, setCustomHeadline] = useState<string | null>(null)
-  const [customSubtitle, setCustomSubtitle] = useState<string | null>(null)
   const [briefing, setBriefing] = useState<Briefing | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [elapsed, setElapsed] = useState(0)
@@ -147,8 +144,6 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     fetchBriefingById(id)
       .then((remote) => {
         if (requestIdRef.current !== id) return
-        setCustomHeadline(remote.headline)
-        setCustomSubtitle(`${Math.round(remote.durationSeconds / 60)}분 브리핑`)
         setDateLabel(formatDate(remote.date))
         setBriefing(toBriefing(remote))
       })
@@ -162,8 +157,6 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     if (activeId === id) return
 
     setActiveId(id)
-    setCustomHeadline(null)
-    setCustomSubtitle(null)
     setDateLabel(todayDateLabel())
     fetchBriefing(id)
   }
@@ -249,21 +242,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  const defaultHeadline =
-    portfolioStocks.length > 0
-      ? `${portfolioStocks
-          .slice(0, 2)
-          .map((s) => s.name)
-          .join('·')} 실적 서프라이즈`
-      : '오늘의 증시 브리핑'
-
-  const defaultSubtitle =
-    portfolioStocks.length > 0
-      ? `2차전지 반등 · ${portfolioStocks[0].name} 외 ${Math.max(portfolioStocks.length - 1, 0)}개 종목`
-      : '관심 종목을 등록하면 더 정확해져요'
-
-  const headline = customHeadline ?? defaultHeadline
-  const subtitle = customSubtitle ?? defaultSubtitle
+  const headline = '오늘의 증시 브리핑'
 
   const durationSeconds = briefing?.durationSec ?? 0
   const progress = durationSeconds > 0 ? elapsed / durationSeconds : 0
@@ -284,7 +263,6 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     isPlaying,
     speed,
     headline,
-    subtitle,
     durationSeconds,
     progress,
     segments,
